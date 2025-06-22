@@ -1,0 +1,16 @@
+# 仮想環境
+voice_env/
+
+# 一時ファイル・テスト
+temp/
+tests/
+
+# macOS自動生成
+.DS_Store
+
+# Python実行時生成
+__pycache__/
+*.pyc
+
+# 音声一時ファイル
+*.wav
