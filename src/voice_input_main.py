@@ -48,6 +48,11 @@ class VoiceInputTool:
         print("  📌 Ctrl+C で終了")
         print("="*50 + "\n")
 
+        # 🆕 追加部分：クリップボード初期化（問題の根本対策）
+        print("🔧 クリップボード初期化中...")
+        subprocess.run(['pbcopy'], input="", text=True)
+        print("✅ クリップボード初期化完了")
+
     def setup_ui_root(self):
         """UIフィードバック用のルートウィンドウをセットアップ"""
         if self.feedback_root is None:
@@ -238,17 +243,9 @@ class VoiceInputTool:
     def insert_text_via_clipboard(self, text):
         """AppleScript + クリップボード経由でテキスト挿入（フォーカス修正版）"""
         try:
-            print("🔍 フォーカス修正版メソッドが実行されています")
-            print(f"🔍 挿入対象テキスト: '{text}'")
-            
-            # 現在のクリップボード内容を保存
-            old_clipboard = subprocess.run(['pbpaste'], capture_output=True, text=True).stdout
-            print(f"🔍 元のクリップボード内容: '{old_clipboard[:50]}...'")
             
             # テキストをクリップボードにコピー
-            escaped_text = text.replace('"', '\\"').replace("'", "\\'")
             subprocess.run(['pbcopy'], input=text, text=True)
-            print(f"🔍 エスケープ後: '{escaped_text}'")
             
             # フォーカスを前のアプリに戻してから貼り付け
             script = '''
@@ -262,26 +259,21 @@ class VoiceInputTool:
             tell application "System Events" to keystroke "v" using command down
             '''
             
-            print("🔍 フォーカス修正版AppleScript実行中...")
-            result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True)
-            print(f"🔍 AppleScript結果: returncode={result.returncode}")
-            if result.stderr:
-                print(f"🔍 エラー詳細: {result.stderr}")
+            # 🆕 AppleScript実行直前にクリップボード再設定
+            subprocess.run(['pbcopy'], input=text, text=True)
             
-            # クリップボードを復元
-            subprocess.run(['pbcopy'], input=old_clipboard, text=True)
-            print("🔍 クリップボード復元完了")
+            result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True)
+            
             
             if result.returncode == 0:
-                print("✅ テキスト挿入完了（フォーカス修正版）")
+                print("✅ テキスト挿入完了")
+                return True
             else:
-                print(f"❌ AppleScript実行エラー: {result.stderr}")
-                # フォールバック実行
-                self._fallback_clipboard_insert(text)
+                return False
                 
         except Exception as e:
             print(f"❌ テキスト挿入エラー: {e}")
-            self._fallback_clipboard_insert(text)
+            return False
 
     def _fallback_clipboard_insert(self, text):
         """フォールバック: 元のpyautogui方式"""
