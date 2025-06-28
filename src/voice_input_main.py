@@ -303,6 +303,9 @@ class VoiceInputTool:
     def process_audio(self):
         """音声をテキストに変換してアクティブフィールドに挿入"""
         try:
+            # 🆕 Phase 7-C: 詳細時間測定開始
+            process_start = time.time()
+            
             if len(self.audio_data) == 0:
                 print("❌ 音声データがありません")
                 self.show_complete_feedback("❌ 音声なし")
@@ -310,6 +313,9 @@ class VoiceInputTool:
             
             # 処理中フィードバック表示
             self.show_processing_feedback()
+            
+            # 🆕 測定ポイント1: 音声データ前処理開始
+            audio_prep_start = time.time()
             
             # 音声データをnumpy配列に変換
             audio_array = np.array(self.audio_data, dtype=np.float32)
@@ -333,10 +339,16 @@ class VoiceInputTool:
                 self.show_complete_feedback("⚠️ 音声小さい")
                 return
             
+            # 🆕 測定ポイント2: WAVファイル保存開始
+            wav_save_start = time.time()
+            
             # WAVファイルに保存
             wav_data = (audio_array * 32767).astype(np.int16)
             wav.write(self.temp_file, self.sample_rate, wav_data)
             print(f"💾 音声ファイル保存: {self.temp_file}")
+            
+            # 🆕 測定ポイント3: WAVファイル保存完了
+            wav_save_end = time.time()
             
             # Whisper処理時間測定開始
             whisper_start = time.time()
@@ -346,19 +358,46 @@ class VoiceInputTool:
             segments, info = self.model.transcribe(
                 self.temp_file,
                 language="ja",
-                beam_size=5,
-                best_of=5
+                beam_size=1,
+                best_of=1,
+                temperature=0.0,
+                no_speech_threshold=0.6,
+                log_prob_threshold=-1.0,
+                compression_ratio_threshold=2.4
             )
             
             whisper_end = time.time()
             
             print(f"📋 認識言語: {info.language} (確率: {info.language_probability:.2f})")
             
-            # 認識結果を結合
-            transcribed_text = ""
-            for segment in segments:
+            # 🆕 測定ポイント4: テキスト結合開始
+            text_combine_start = time.time()
+            
+            # 🔥 更に詳細分析：segments処理を細分化
+            print("🧠 セグメント処理中...")
+            
+            # セグメント取得時間測定
+            segments_fetch_start = time.time()
+            segments_list = list(segments)  # 一度にリスト化
+            segments_fetch_end = time.time()
+            
+            # セグメント処理時間測定
+            segments_process_start = time.time()
+            segment_texts = []
+            
+            for segment in segments_list:
                 print(f"📝 セグメント: '{segment.text}' (信頼度: {segment.avg_logprob:.2f})")
-                transcribed_text += segment.text
+                segment_texts.append(segment.text)
+            
+            segments_process_end = time.time()
+            
+            # 文字列結合時間測定
+            join_start = time.time()
+            transcribed_text = "".join(segment_texts)  # 効率的な結合
+            join_end = time.time()
+            
+            # 🆕 測定ポイント5: テキスト結合完了
+            text_combine_end = time.time()
             
             if transcribed_text.strip():
                 print(f"📝 変換結果: '{transcribed_text}'")
@@ -381,14 +420,29 @@ class VoiceInputTool:
                 
                 insert_end = time.time()
                 
-                # 詳細処理時間ログ出力
+                # 🆕 Phase 7-C: 詳細処理時間ログ出力
+                audio_prep_time = wav_save_start - audio_prep_start
+                wav_save_time = wav_save_end - wav_save_start
+                whisper_prep_time = whisper_start - wav_save_end
                 whisper_time = whisper_end - whisper_start
+                text_combine_time = text_combine_end - text_combine_start
                 insert_time = insert_end - insert_start
-                total_time = insert_end - whisper_start
+                total_time = insert_end - process_start
                 
+                print("="*60)
+                print("🔬 Phase 7-C 詳細時間分析:")
+                print(f"📊 録音時間: {duration:.2f}秒")
+                print(f"🔧 音声データ前処理: {audio_prep_time:.2f}秒")
+                print(f"💾 WAVファイル保存: {wav_save_time:.2f}秒") 
+                print(f"⚙️ Whisper前準備: {whisper_prep_time:.2f}秒")
                 print(f"🎤 Whisper処理: {whisper_time:.2f}秒")
-                print(f"📝 テキスト挿入: {insert_time:.2f}秒")
+                print(f"📝 テキスト結合: {text_combine_time:.2f}秒")
+                print(f"  └ セグメント取得: {segments_fetch_end - segments_fetch_start:.2f}秒")
+                print(f"  └ セグメント処理: {segments_process_end - segments_process_start:.2f}秒")
+                print(f"  └ 文字列結合: {join_end - join_start:.2f}秒")
+                print(f"📋 テキスト挿入: {insert_time:.2f}秒")
                 print(f"⏱️ 総処理時間: {total_time:.2f}秒")
+                print("="*60)
                 
                 # 完了フィードバック表示
                 self.show_complete_feedback("✅ 完了")
