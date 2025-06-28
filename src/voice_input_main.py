@@ -38,7 +38,7 @@ class VoiceInputTool:
         
         # Whisperモデル初期化
         print("🧠 Whisperモデル読み込み中...")
-        self.model = WhisperModel("base", device="cpu", compute_type="int8")
+        self.model = WhisperModel("small", device="cpu", compute_type="int8")
         print("✅ 初期化完了！")
         print("\n" + "="*50)
         print("🎯 使用方法:")
@@ -338,6 +338,9 @@ class VoiceInputTool:
             wav.write(self.temp_file, self.sample_rate, wav_data)
             print(f"💾 音声ファイル保存: {self.temp_file}")
             
+            # Whisper処理時間測定開始
+            whisper_start = time.time()
+            
             # Whisperで音声認識
             print("🧠 音声認識処理中...")
             segments, info = self.model.transcribe(
@@ -346,6 +349,8 @@ class VoiceInputTool:
                 beam_size=5,
                 best_of=5
             )
+            
+            whisper_end = time.time()
             
             print(f"📋 認識言語: {info.language} (確率: {info.language_probability:.2f})")
             
@@ -357,6 +362,9 @@ class VoiceInputTool:
             
             if transcribed_text.strip():
                 print(f"📝 変換結果: '{transcribed_text}'")
+                
+                # テキスト挿入時間測定開始
+                insert_start = time.time()
                 
                 # テキスト挿入（クリップボード経由→フォールバック）
                 success = self.insert_text_via_clipboard(transcribed_text)
@@ -370,6 +378,17 @@ class VoiceInputTool:
                         print(f"❌ 直接入力も失敗: {e}")
                         self.show_complete_feedback("❌ 挿入失敗")
                         return
+                
+                insert_end = time.time()
+                
+                # 詳細処理時間ログ出力
+                whisper_time = whisper_end - whisper_start
+                insert_time = insert_end - insert_start
+                total_time = insert_end - whisper_start
+                
+                print(f"🎤 Whisper処理: {whisper_time:.2f}秒")
+                print(f"📝 テキスト挿入: {insert_time:.2f}秒")
+                print(f"⏱️ 総処理時間: {total_time:.2f}秒")
                 
                 # 完了フィードバック表示
                 self.show_complete_feedback("✅ 完了")
