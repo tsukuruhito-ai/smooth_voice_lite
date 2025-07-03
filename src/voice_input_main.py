@@ -12,8 +12,6 @@ import scipy.io.wavfile as wav
 import os
 import time
 import threading
-import tkinter as tk
-from tkinter import ttk
 import subprocess
 
 class VoiceInputTool:
@@ -27,11 +25,6 @@ class VoiceInputTool:
         self.stream = None
         self.temp_dir = "temp"
         self.temp_file = os.path.join(self.temp_dir, "current_recording.wav")
-        
-        # UIフィードバック用
-        self.feedback_root = None
-        self.feedback_window = None
-        self.recording_start_time = None
         
         # tempディレクトリ作成
         os.makedirs(self.temp_dir, exist_ok=True)
@@ -53,142 +46,6 @@ class VoiceInputTool:
         subprocess.run(['pbcopy'], input="", text=True)
         print("✅ クリップボード初期化完了")
 
-    def setup_ui_root(self):
-        """UIフィードバック用のルートウィンドウをセットアップ"""
-        if self.feedback_root is None:
-            self.feedback_root = tk.Tk()
-            self.feedback_root.withdraw()  # メインウィンドウは非表示
-            # バックグラウンドで動作させるための設定
-            self.feedback_root.attributes('-topmost', True)
-
-    def show_recording_feedback(self):
-        """録音中のフィードバックを表示"""
-        def create_recording_window():
-            self.setup_ui_root()
-            
-            if self.feedback_window:
-                self.feedback_window.destroy()
-            
-            # 録音中ウィンドウ作成
-            self.feedback_window = tk.Toplevel(self.feedback_root)
-            self.feedback_window.title("録音中")
-            self.feedback_window.geometry("200x60")
-            
-            # macOSで画面右上に配置
-            screen_width = self.feedback_window.winfo_screenwidth()
-            self.feedback_window.geometry(f"200x60+{screen_width-220}+50")
-            
-            # ウィンドウ設定
-            self.feedback_window.attributes('-topmost', True)
-            self.feedback_window.resizable(False, False)
-            
-            # ラベル作成
-            self.recording_label = tk.Label(
-                self.feedback_window, 
-                text="🎤 録音中... 0.0秒",
-                font=("Arial", 12),
-                fg="red"
-            )
-            self.recording_label.pack(expand=True)
-            
-            # 時間更新を開始
-            self.update_recording_time()
-        
-        # UIスレッドで実行
-        if threading.current_thread() is threading.main_thread():
-            create_recording_window()
-        else:
-            self.feedback_root.after(0, create_recording_window)
-
-    def update_recording_time(self):
-        """録音時間を更新"""
-        if self.is_recording and self.feedback_window and self.recording_start_time:
-            elapsed = time.time() - self.recording_start_time
-            self.recording_label.config(text=f"🎤 録音中... {elapsed:.1f}秒")
-            # 100ms毎に更新
-            self.feedback_window.after(100, self.update_recording_time)
-
-    def show_processing_feedback(self):
-        """処理中のフィードバックを表示"""
-        def create_processing_window():
-            self.setup_ui_root()
-            
-            if self.feedback_window:
-                self.feedback_window.destroy()
-            
-            # 処理中ウィンドウ作成
-            self.feedback_window = tk.Toplevel(self.feedback_root)
-            self.feedback_window.title("変換中")
-            self.feedback_window.geometry("180x60")
-            
-            # macOSで画面右上に配置
-            screen_width = self.feedback_window.winfo_screenwidth()
-            self.feedback_window.geometry(f"180x60+{screen_width-200}+50")
-            
-            # ウィンドウ設定
-            self.feedback_window.attributes('-topmost', True)
-            self.feedback_window.resizable(False, False)
-            
-            # ラベル作成
-            processing_label = tk.Label(
-                self.feedback_window, 
-                text="⏳ 変換中...",
-                font=("Arial", 12),
-                fg="blue"
-            )
-            processing_label.pack(expand=True)
-        
-        # UIスレッドで実行
-        if threading.current_thread() is threading.main_thread():
-            create_processing_window()
-        else:
-            self.feedback_root.after(0, create_processing_window)
-
-    def show_complete_feedback(self, message="✅ 完了"):
-        """完了フィードバックを表示（1秒後自動消去）"""
-        def create_complete_window():
-            self.setup_ui_root()
-            
-            if self.feedback_window:
-                self.feedback_window.destroy()
-            
-            # 完了ウィンドウ作成
-            self.feedback_window = tk.Toplevel(self.feedback_root)
-            self.feedback_window.title("完了")
-            self.feedback_window.geometry("150x60")
-            
-            # macOSで画面右上に配置
-            screen_width = self.feedback_window.winfo_screenwidth()
-            self.feedback_window.geometry(f"150x60+{screen_width-170}+50")
-            
-            # ウィンドウ設定
-            self.feedback_window.attributes('-topmost', True)
-            self.feedback_window.resizable(False, False)
-            
-            # ラベル作成
-            complete_label = tk.Label(
-                self.feedback_window, 
-                text=message,
-                font=("Arial", 12),
-                fg="green"
-            )
-            complete_label.pack(expand=True)
-            
-            # 1秒後に自動で閉じる
-            self.feedback_window.after(1000, self.hide_feedback)
-        
-        # UIスレッドで実行
-        if threading.current_thread() is threading.main_thread():
-            create_complete_window()
-        else:
-            self.feedback_root.after(0, create_complete_window)
-
-    def hide_feedback(self):
-        """フィードバックウィンドウを非表示"""
-        if self.feedback_window:
-            self.feedback_window.destroy()
-            self.feedback_window = None
-
     def audio_callback(self, indata, frames, time, status):
         """音声データを取得するコールバック"""
         if status:
@@ -205,9 +62,6 @@ class VoiceInputTool:
         self.is_recording = True
         self.audio_data = []
         self.recording_start_time = time.time()
-        
-        # UIフィードバック表示
-        threading.Thread(target=self.show_recording_feedback, daemon=True).start()
         
         try:
             self.stream = sd.InputStream(
@@ -308,11 +162,7 @@ class VoiceInputTool:
             
             if len(self.audio_data) == 0:
                 print("❌ 音声データがありません")
-                self.show_complete_feedback("❌ 音声なし")
                 return
-            
-            # 処理中フィードバック表示
-            self.show_processing_feedback()
             
             # 🆕 測定ポイント1: 音声データ前処理開始
             audio_prep_start = time.time()
@@ -326,7 +176,6 @@ class VoiceInputTool:
             # 最低録音時間チェック
             if duration < 0.5:
                 print("⚠️ 録音時間が短すぎます（最低0.5秒必要）")
-                self.show_complete_feedback("⚠️ 録音短すぎ")
                 return
             
             # 音声レベル確認（デバッグ用）
@@ -336,7 +185,6 @@ class VoiceInputTool:
             
             if max_level < 0.01:
                 print("⚠️ 音声レベルが低すぎます")
-                self.show_complete_feedback("⚠️ 音声小さい")
                 return
             
             # 🆕 測定ポイント2: WAVファイル保存開始
@@ -415,7 +263,6 @@ class VoiceInputTool:
                         print("✅ テキスト挿入完了（直接入力）")
                     except Exception as e:
                         print(f"❌ 直接入力も失敗: {e}")
-                        self.show_complete_feedback("❌ 挿入失敗")
                         return
                 
                 insert_end = time.time()
@@ -444,16 +291,11 @@ class VoiceInputTool:
                 print(f"⏱️ 総処理時間: {total_time:.2f}秒")
                 print("="*60)
                 
-                # 完了フィードバック表示
-                self.show_complete_feedback("✅ 完了")
-                
             else:
                 print("❌ 音声を認識できませんでした")
-                self.show_complete_feedback("❌ 認識失敗")
                 
         except Exception as e:
             print(f"❌ 音声処理エラー: {e}")
-            self.show_complete_feedback("❌ エラー")
         
         print("-" * 50)
 
@@ -478,8 +320,8 @@ class VoiceInputTool:
         print("🚀 音声入力ツール開始")
         print("💡 Escキーを押している間録音されます")
         
-        # UIルート初期化
-        self.setup_ui_root()
+        # 削除対象：UIルート初期化
+        # self.setup_ui_root()
         
         # キーボードリスナー開始
         with keyboard.Listener(
@@ -487,23 +329,18 @@ class VoiceInputTool:
             on_release=self.on_release
         ) as listener:
             try:
-                # tkinterのメインループと組み合わせ
-                def check_listener():
-                    if listener.running:
-                        self.feedback_root.after(100, check_listener)
-                    else:
-                        self.feedback_root.quit()
-                
-                check_listener()
-                self.feedback_root.mainloop()
-                
+                # 削除対象：tkinterのメインループ関連
+                # 以下のコードを全て削除して、シンプルなjoin()に置換
+                listener.join()
+                    
             except KeyboardInterrupt:
                 print("\n🛑 プログラムを終了します")
             finally:
                 if self.stream:
                     self.stream.stop()
                     self.stream.close()
-                self.hide_feedback()
+                # 削除対象
+                # self.hide_feedback()
 
 if __name__ == "__main__":
     tool = VoiceInputTool()
