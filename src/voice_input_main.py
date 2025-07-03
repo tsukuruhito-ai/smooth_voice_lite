@@ -47,12 +47,12 @@ class VoiceInputTool:
         print("✅ クリップボード初期化完了")
 
     def play_sound_async(self, sound_type):
-        """🎵 非同期音声フィードバック再生"""
+        """🎵 非同期音声フィードバック再生（最終版）"""
         def play():
             sounds = {
-                'start': 'Glass',      
-                'complete': 'Submarine', 
-                'error': 'Funk'       
+                'start': 'Glass',      # 録音開始: クリスタル音
+                'complete': 'Submarine', # 録音完了: 深めの完了音
+                'error': 'Funk'        # エラー: 目立つが不快でない
             }
             try:
                 subprocess.run(['afplay', f'/System/Library/Sounds/{sounds[sound_type]}.aiff'], 
