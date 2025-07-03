@@ -1,5 +1,5 @@
 """
-音声入力ツール v1.5 - クリップボード対応版
+音声入力ツール Phase S-1 - 音声フィードバック実装版
 Escキーを押している間録音し、離すと音声をテキストに変換してアクティブなフィールドに挿入
 """
 
@@ -16,7 +16,7 @@ import subprocess
 
 class VoiceInputTool:
     def __init__(self):
-        print("🎤 音声入力ツール v1.5 初期化中...")
+        print("🎤 音声入力ツール Phase S-1 初期化中...")
         
         # 基本設定
         self.sample_rate = 16000
@@ -37,14 +37,30 @@ class VoiceInputTool:
         print("🎯 使用方法:")
         print("  📌 Escキーを押している間録音")
         print("  📌 キーを離すと音声をテキストに変換")
-        print("  📌 クリップボード経由で確実に挿入")
+        print("  📌 音声フィードバック: 🎵ピッ(開始) → 🎵ピピッ(完了)")
         print("  📌 Ctrl+C で終了")
         print("="*50 + "\n")
 
-        # 🆕 追加部分：クリップボード初期化（問題の根本対策）
+        # クリップボード初期化
         print("🔧 クリップボード初期化中...")
         subprocess.run(['pbcopy'], input="", text=True)
         print("✅ クリップボード初期化完了")
+
+    def play_sound_async(self, sound_type):
+        """🎵 非同期音声フィードバック再生"""
+        def play():
+            sounds = {
+                'start': 'Glass',      
+                'complete': 'Submarine', 
+                'error': 'Funk'       
+            }
+            try:
+                subprocess.run(['afplay', f'/System/Library/Sounds/{sounds[sound_type]}.aiff'], 
+                            check=False)
+            except:
+                pass
+        
+        threading.Thread(target=play, daemon=True).start()
 
     def audio_callback(self, indata, frames, time, status):
         """音声データを取得するコールバック"""
@@ -63,6 +79,10 @@ class VoiceInputTool:
         self.audio_data = []
         self.recording_start_time = time.time()
         
+        # 🎵 音声フィードバック: 録音開始（非同期）
+        self.play_sound_async('start')
+        
+        # 録音開始処理（最優先）
         try:
             self.stream = sd.InputStream(
                 samplerate=self.sample_rate,
@@ -73,6 +93,7 @@ class VoiceInputTool:
             self.stream.start()
         except Exception as e:
             print(f"❌ 録音開始エラー: {e}")
+            self.play_sound_async('error')
             self.is_recording = False
 
     def stop_recording(self):
@@ -81,6 +102,9 @@ class VoiceInputTool:
             return
             
         print("⏹️ 録音停止")
+        # 🎵 音声フィードバック: 録音停止
+        self.play_sound_async('complete')
+        
         self.is_recording = False
         
         try:
@@ -90,6 +114,7 @@ class VoiceInputTool:
                 self.stream = None
         except Exception as e:
             print(f"⚠️ 録音停止エラー: {e}")
+            self.play_sound_async('error')
         
         # 音声処理を別スレッドで実行
         threading.Thread(target=self.process_audio, daemon=True).start()
@@ -97,7 +122,6 @@ class VoiceInputTool:
     def insert_text_via_clipboard(self, text):
         """AppleScript + クリップボード経由でテキスト挿入（フォーカス修正版）"""
         try:
-            
             # テキストをクリップボードにコピー
             subprocess.run(['pbcopy'], input=text, text=True)
             
@@ -113,11 +137,10 @@ class VoiceInputTool:
             tell application "System Events" to keystroke "v" using command down
             '''
             
-            # 🆕 AppleScript実行直前にクリップボード再設定
+            # AppleScript実行直前にクリップボード再設定
             subprocess.run(['pbcopy'], input=text, text=True)
             
             result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True)
-            
             
             if result.returncode == 0:
                 print("✅ テキスト挿入完了")
@@ -157,14 +180,16 @@ class VoiceInputTool:
     def process_audio(self):
         """音声をテキストに変換してアクティブフィールドに挿入"""
         try:
-            # 🆕 Phase 7-C: 詳細時間測定開始
+            # Phase 7-C: 詳細時間測定開始
             process_start = time.time()
             
             if len(self.audio_data) == 0:
                 print("❌ 音声データがありません")
+                # 🎵 音声フィードバック: エラー
+                self.play_sound_async('error')
                 return
             
-            # 🆕 測定ポイント1: 音声データ前処理開始
+            # 測定ポイント1: 音声データ前処理開始
             audio_prep_start = time.time()
             
             # 音声データをnumpy配列に変換
@@ -176,6 +201,8 @@ class VoiceInputTool:
             # 最低録音時間チェック
             if duration < 0.5:
                 print("⚠️ 録音時間が短すぎます（最低0.5秒必要）")
+                # 🎵 音声フィードバック: エラー
+                self.play_sound_async('error')
                 return
             
             # 音声レベル確認（デバッグ用）
@@ -185,9 +212,11 @@ class VoiceInputTool:
             
             if max_level < 0.01:
                 print("⚠️ 音声レベルが低すぎます")
+                # 🎵 音声フィードバック: エラー
+                self.play_sound_async('error')
                 return
             
-            # 🆕 測定ポイント2: WAVファイル保存開始
+            # 測定ポイント2: WAVファイル保存開始
             wav_save_start = time.time()
             
             # WAVファイルに保存
@@ -195,7 +224,7 @@ class VoiceInputTool:
             wav.write(self.temp_file, self.sample_rate, wav_data)
             print(f"💾 音声ファイル保存: {self.temp_file}")
             
-            # 🆕 測定ポイント3: WAVファイル保存完了
+            # 測定ポイント3: WAVファイル保存完了
             wav_save_end = time.time()
             
             # Whisper処理時間測定開始
@@ -218,15 +247,15 @@ class VoiceInputTool:
             
             print(f"📋 認識言語: {info.language} (確率: {info.language_probability:.2f})")
             
-            # 🆕 測定ポイント4: テキスト結合開始
+            # 測定ポイント4: テキスト結合開始
             text_combine_start = time.time()
             
-            # 🔥 更に詳細分析：segments処理を細分化
+            # セグメント処理
             print("🧠 セグメント処理中...")
             
             # セグメント取得時間測定
             segments_fetch_start = time.time()
-            segments_list = list(segments)  # 一度にリスト化
+            segments_list = list(segments)
             segments_fetch_end = time.time()
             
             # セグメント処理時間測定
@@ -241,10 +270,10 @@ class VoiceInputTool:
             
             # 文字列結合時間測定
             join_start = time.time()
-            transcribed_text = "".join(segment_texts)  # 効率的な結合
+            transcribed_text = "".join(segment_texts)
             join_end = time.time()
             
-            # 🆕 測定ポイント5: テキスト結合完了
+            # 測定ポイント5: テキスト結合完了
             text_combine_end = time.time()
             
             if transcribed_text.strip():
@@ -261,13 +290,16 @@ class VoiceInputTool:
                     try:
                         pyautogui.write(transcribed_text)
                         print("✅ テキスト挿入完了（直接入力）")
+                        success = True
                     except Exception as e:
                         print(f"❌ 直接入力も失敗: {e}")
+                        # 🎵 音声フィードバック: エラー
+                        self.play_sound_async('error')
                         return
                 
                 insert_end = time.time()
                 
-                # 🆕 Phase 7-C: 詳細処理時間ログ出力
+                # Phase 7-C: 詳細処理時間ログ出力
                 audio_prep_time = wav_save_start - audio_prep_start
                 wav_save_time = wav_save_end - wav_save_start
                 whisper_prep_time = whisper_start - wav_save_end
@@ -293,9 +325,13 @@ class VoiceInputTool:
                 
             else:
                 print("❌ 音声を認識できませんでした")
+                # 🎵 音声フィードバック: エラー
+                self.play_sound_async('error')
                 
         except Exception as e:
             print(f"❌ 音声処理エラー: {e}")
+            # 🎵 音声フィードバック: エラー
+            self.play_sound_async('error')
         
         print("-" * 50)
 
@@ -317,11 +353,9 @@ class VoiceInputTool:
 
     def run(self):
         """メインループ実行"""
-        print("🚀 音声入力ツール開始")
+        print("🚀 音声入力ツール Phase S-1 開始")
         print("💡 Escキーを押している間録音されます")
-        
-        # 削除対象：UIルート初期化
-        # self.setup_ui_root()
+        print("🎵 音声フィードバック: ピッ(開始) → ピピッ(完了)")
         
         # キーボードリスナー開始
         with keyboard.Listener(
@@ -329,8 +363,6 @@ class VoiceInputTool:
             on_release=self.on_release
         ) as listener:
             try:
-                # 削除対象：tkinterのメインループ関連
-                # 以下のコードを全て削除して、シンプルなjoin()に置換
                 listener.join()
                     
             except KeyboardInterrupt:
@@ -339,8 +371,6 @@ class VoiceInputTool:
                 if self.stream:
                     self.stream.stop()
                     self.stream.close()
-                # 削除対象
-                # self.hide_feedback()
 
 if __name__ == "__main__":
     tool = VoiceInputTool()
