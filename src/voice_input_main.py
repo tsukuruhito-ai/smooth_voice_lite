@@ -1,6 +1,7 @@
 """
-音声入力ツール Phase S-1 - 音声フィードバック実装版
+音声入力ツール Phase S-2 - F1分離送信版
 Escキーを押している間録音し、離すと音声をテキストに変換してアクティブなフィールドに挿入
+天秤AIの場合はF1キーで送信
 """
 
 import sounddevice as sd
@@ -16,7 +17,7 @@ import subprocess
 
 class VoiceInputTool:
     def __init__(self):
-        print("🎤 音声入力ツール Phase S-1 初期化中...")
+        print("🎤 音声入力ツール Phase S-2 F1分離送信版 初期化中...")
         
         # 基本設定
         self.sample_rate = 16000
@@ -26,6 +27,13 @@ class VoiceInputTool:
         self.temp_dir = "temp"
         self.temp_file = os.path.join(self.temp_dir, "current_recording.wav")
         
+        # 天秤AI判別結果を保存
+        self.is_tenbin_app = False
+
+        # 送信待機状態管理
+        self.waiting_for_send = False
+        self.waiting_timer = None
+            
         # tempディレクトリ作成
         os.makedirs(self.temp_dir, exist_ok=True)
         
@@ -36,8 +44,7 @@ class VoiceInputTool:
         print("\n" + "="*50)
         print("🎯 使用方法:")
         print("  📌 Escキーを押している間録音")
-        print("  📌 キーを離すと音声をテキストに変換")
-        print("  📌 音声フィードバック: 🎵ピッ(開始) → 🎵ピピッ(完了)")
+        print("  📌 F1キーで送信実行")
         print("  📌 Ctrl+C で終了")
         print("="*50 + "\n")
 
@@ -45,6 +52,47 @@ class VoiceInputTool:
         print("🔧 クリップボード初期化中...")
         subprocess.run(['pbcopy'], input="", text=True)
         print("✅ クリップボード初期化完了")
+
+    def is_tenbin_ai(self):
+        """天秤AI判別"""
+        try:
+            script = '''
+            tell application "System Events"
+                set frontApp to name of first application process whose frontmost is true
+                if frontApp is "Google Chrome" or frontApp contains "Chrome" then
+                    tell application "Google Chrome"
+                        set currentURL to URL of active tab of first window
+                        if currentURL contains "tenbin.ai" then
+                            return true
+                        end if
+                    end tell
+                end if
+                return false
+            end tell
+            '''
+            result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True)
+            is_tenbin = result.stdout.strip() == "true"
+            print(f"🔍 天秤AI判別結果: {is_tenbin}")
+            return is_tenbin
+        except Exception as e:
+            print(f"⚠️ アプリ判別エラー: {e}")
+            return False
+
+    def send_tenbin_command(self):
+        """天秤AI送信コマンド実行"""
+        try:
+            print("📤 天秤AI送信実行中...")
+            # Cmd+Enter送信
+            subprocess.run(['osascript', '-e', '''
+            tell application "System Events"
+                key code 36 using command down
+            end tell
+            '''])
+            print("✅ 天秤AI送信完了")
+            return True
+        except Exception as e:
+            print(f"❌ 送信エラー: {e}")
+            return False
 
     def play_sound_async(self, sound_type):
         """🎵 非同期音声フィードバック再生（最終版）"""
@@ -75,6 +123,10 @@ class VoiceInputTool:
             return
             
         print("🎤 録音開始...")
+        
+        # 🔍 アプリ判別を最初に実行
+        self.is_tenbin_app = self.is_tenbin_ai()
+        
         self.is_recording = True
         self.audio_data = []
         self.recording_start_time = time.time()
@@ -185,7 +237,6 @@ class VoiceInputTool:
             
             if len(self.audio_data) == 0:
                 print("❌ 音声データがありません")
-                # 🎵 音声フィードバック: エラー
                 self.play_sound_async('error')
                 return
             
@@ -201,7 +252,6 @@ class VoiceInputTool:
             # 最低録音時間チェック
             if duration < 0.5:
                 print("⚠️ 録音時間が短すぎます（最低0.5秒必要）")
-                # 🎵 音声フィードバック: エラー
                 self.play_sound_async('error')
                 return
             
@@ -212,7 +262,6 @@ class VoiceInputTool:
             
             if max_level < 0.01:
                 print("⚠️ 音声レベルが低すぎます")
-                # 🎵 音声フィードバック: エラー
                 self.play_sound_async('error')
                 return
             
@@ -293,11 +342,16 @@ class VoiceInputTool:
                         success = True
                     except Exception as e:
                         print(f"❌ 直接入力も失敗: {e}")
-                        # 🎵 音声フィードバック: エラー
                         self.play_sound_async('error')
                         return
                 
                 insert_end = time.time()
+                
+                # 🚀 天秤AI判別結果に基づく送信待機モード
+                if success and self.is_tenbin_app:
+                    print("🎯 天秤AI検知 - 送信待機モード開始")
+                    time.sleep(0.2)  # テキスト挿入完了待ち
+                    self.enter_send_waiting_mode() 
                 
                 # Phase 7-C: 詳細処理時間ログ出力
                 audio_prep_time = wav_save_start - audio_prep_start
@@ -311,7 +365,7 @@ class VoiceInputTool:
                 print("="*60)
                 print("🔬 Phase 7-C 詳細時間分析:")
                 print(f"📊 録音時間: {duration:.2f}秒")
-                print(f"🔧 音声データ前処理: {audio_prep_time:.2f}秒")
+                print(f"🔧 音声データ前処理: {audio_prep_time:.2f}") 
                 print(f"💾 WAVファイル保存: {wav_save_time:.2f}秒") 
                 print(f"⚙️ Whisper前準備: {whisper_prep_time:.2f}秒")
                 print(f"🎤 Whisper処理: {whisper_time:.2f}秒")
@@ -321,16 +375,16 @@ class VoiceInputTool:
                 print(f"  └ 文字列結合: {join_end - join_start:.2f}秒")
                 print(f"📋 テキスト挿入: {insert_time:.2f}秒")
                 print(f"⏱️ 総処理時間: {total_time:.2f}秒")
+                if self.is_tenbin_app:
+                    print(f"⏳ 天秤AI送信待機: F1キーで送信")
                 print("="*60)
                 
             else:
                 print("❌ 音声を認識できませんでした")
-                # 🎵 音声フィードバック: エラー
                 self.play_sound_async('error')
                 
         except Exception as e:
             print(f"❌ 音声処理エラー: {e}")
-            # 🎵 音声フィードバック: エラー
             self.play_sound_async('error')
         
         print("-" * 50)
@@ -339,7 +393,18 @@ class VoiceInputTool:
         """キー押下時の処理"""
         try:
             if key == keyboard.Key.esc:
+                # 送信待機中なら前の状態リセット
+                if self.waiting_for_send:
+                    self.reset_waiting_state()
                 self.start_recording()
+            elif str(key) == '<145>':  # F1キーのキーコード
+                # F1キーで送信実行
+                if self.waiting_for_send and self.is_tenbin_app:
+                    print("🚀 F1キー送信実行")
+                    self.send_tenbin_command()
+                    self.reset_waiting_state()
+                else:
+                    print("⚠️ 送信待機状態ではありません")
         except AttributeError:
             pass
 
@@ -351,11 +416,38 @@ class VoiceInputTool:
         except AttributeError:
             pass
 
+    def enter_send_waiting_mode(self):
+        """送信待機状態に移行"""
+        print("⏳ 送信待機状態開始 - F1キーで送信")
+        self.waiting_for_send = True
+        
+        # 15分タイムアウト設定
+        if self.waiting_timer:
+            self.waiting_timer.cancel()
+        
+        self.waiting_timer = threading.Timer(15 * 60, self.timeout_waiting_state)
+        self.waiting_timer.start()
+
+    def timeout_waiting_state(self):
+        """送信待機状態タイムアウト"""
+        print("⏰ 送信待機状態タイムアウト（15分経過）")
+        self.reset_waiting_state()
+
+    def reset_waiting_state(self):
+        """送信待機状態をリセット"""
+        if self.waiting_for_send:
+            print("🔄 送信待機状態リセット")
+            self.waiting_for_send = False
+            if self.waiting_timer:
+                self.waiting_timer.cancel()
+                self.waiting_timer = None
+
     def run(self):
         """メインループ実行"""
-        print("🚀 音声入力ツール Phase S-1 開始")
+        print("🚀 音声入力ツール Phase S-2 F1分離送信版 開始")
         print("💡 Escキーを押している間録音されます")
         print("🎵 音声フィードバック: ピッ(開始) → ピピッ(完了)")
+        print("🎯 天秤AIの場合はF1キーで送信されます")
         
         # キーボードリスナー開始
         with keyboard.Listener(
@@ -371,6 +463,8 @@ class VoiceInputTool:
                 if self.stream:
                     self.stream.stop()
                     self.stream.close()
+                if self.waiting_timer:
+                    self.waiting_timer.cancel()
 
 if __name__ == "__main__":
     tool = VoiceInputTool()
