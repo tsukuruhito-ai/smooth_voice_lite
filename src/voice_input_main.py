@@ -1,7 +1,7 @@
 """
-音声入力ツール Phase S-2 - F1分離送信版
+音声入力ツール Phase S-8 Step 2 - 汎用送信システム実装
 Escキーを押している間録音し、離すと音声をテキストに変換してアクティブなフィールドに挿入
-天秤AIの場合はF1キーで送信
+18サービス対応の汎用送信機能 - 送信システム完成版
 """
 
 import sounddevice as sd
@@ -17,7 +17,7 @@ import subprocess
 
 class VoiceInputTool:
     def __init__(self):
-        print("🎤 音声入力ツール Phase S-2 F1分離送信版 初期化中...")
+        print("🎤 音声入力ツール Phase S-8 Step 2 汎用送信システム版 初期化中...")
         
         # 基本設定
         self.sample_rate = 16000
@@ -27,8 +27,40 @@ class VoiceInputTool:
         self.temp_dir = "temp"
         self.temp_file = os.path.join(self.temp_dir, "current_recording.wav")
         
-        # 天秤AI判別結果を保存
-        self.is_tenbin_app = False
+        # 🆕 汎用送信システム
+        self.send_command = None  # 'Enter' / 'Cmd+Enter' / None
+        
+        # 🆕 送信コマンド辞書
+        self.SEND_COMMANDS = {
+            # AIチャット (Enter系)
+            'chatgpt.com': 'Enter',
+            'claude.ai': 'Enter', 
+            'gemini.google.com': 'Enter',
+            'copilot.microsoft.com': 'Enter',
+            'perplexity.ai': 'Enter',
+            'grok.com': 'Enter',                # Grok
+            'genspark.ai': 'Enter',
+            'notebooklm.google.com': 'Enter',
+            
+            # 開発者ツール (Cmd+Enter系)
+            'tenbin.ai': 'Cmd+Enter',
+            'cursor.so': 'Cmd+Enter',
+            'github.com': 'Cmd+Enter',
+            'notion.so': 'Cmd+Enter',
+            
+            # コミュニケーション (Enter系)
+            'discord.com': 'Enter',
+            'slack.com': 'Enter',
+            'chatwork.com': 'Enter',
+            'line.me': 'Enter',
+        }
+        
+        # 🆕 デスクトップアプリ辞書
+        self.DESKTOP_COMMANDS = {
+            'Claude': 'Cmd+Enter',
+            'Visual Studio Code': 'Cmd+Enter',
+            'Cursor': 'Cmd+Enter',
+        }
 
         # 送信待機状態管理
         self.waiting_for_send = False
@@ -36,6 +68,10 @@ class VoiceInputTool:
             
         # tempディレクトリ作成
         os.makedirs(self.temp_dir, exist_ok=True)
+
+            # soundsディレクトリ作成
+        self.sounds_dir = "sounds"
+        os.makedirs(self.sounds_dir, exist_ok=True)
         
         # Whisperモデル初期化
         print("🧠 Whisperモデル読み込み中...")
@@ -46,6 +82,7 @@ class VoiceInputTool:
         print("  📌 Escキーを押している間録音")
         print("  📌 F1キーで送信実行")
         print("  📌 Ctrl+C で終了")
+        print("🌟 対応サービス: 18個の主要AI・開発・チャットサービス")
         print("="*50 + "\n")
 
         # クリップボード初期化
@@ -53,60 +90,116 @@ class VoiceInputTool:
         subprocess.run(['pbcopy'], input="", text=True)
         print("✅ クリップボード初期化完了")
 
-    def is_tenbin_ai(self):
-        """天秤AI判別"""
+    def get_app_send_command(self):
+        """🆕 Web + Desktop ハイブリッド判別システム"""
         try:
             script = '''
             tell application "System Events"
                 set frontApp to name of first application process whose frontmost is true
+                
                 if frontApp is "Google Chrome" or frontApp contains "Chrome" then
                     tell application "Google Chrome"
                         set currentURL to URL of active tab of first window
-                        if currentURL contains "tenbin.ai" then
-                            return true
-                        end if
+                        return "WEB:" & currentURL
                     end tell
+                else
+                    return "DESKTOP:" & frontApp
                 end if
-                return false
             end tell
             '''
+            
             result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True)
-            is_tenbin = result.stdout.strip() == "true"
-            print(f"🔍 天秤AI判別結果: {is_tenbin}")
-            return is_tenbin
+            app_info = result.stdout.strip()
+            
+            print(f"🔍 アプリ判別結果: {app_info}")
+            
+            if app_info.startswith("WEB:"):
+                # Web版判別
+                url = app_info[4:]  # "WEB:" を除去
+                return self._get_web_send_command(url)
+            elif app_info.startswith("DESKTOP:"):
+                # Desktop版判別
+                app_name = app_info[8:]  # "DESKTOP:" を除去
+                return self._get_desktop_send_command(app_name)
+            else:
+                return None
+                
         except Exception as e:
             print(f"⚠️ アプリ判別エラー: {e}")
-            return False
+            return None
 
-    def send_tenbin_command(self):
-        """天秤AI送信コマンド実行"""
+    def _get_web_send_command(self, url):
+        """🆕 Web版URL判別"""
+        for domain, command in self.SEND_COMMANDS.items():
+            if domain in url:
+                print(f"✅ Web版判別成功: {domain} → {command}")
+                return command
+        print(f"ℹ️ 未対応Web版: {url}")
+        return None
+
+    def _get_desktop_send_command(self, app_name):
+        """🆕 Desktop版アプリ名判別"""
+        for app, command in self.DESKTOP_COMMANDS.items():
+            if app in app_name:
+                print(f"✅ Desktop版判別成功: {app} → {command}")
+                return command
+        print(f"ℹ️ 未対応Desktop版: {app_name}")
+        return None
+
+    # 🆕 汎用送信システム実装
+    def execute_send_command(self):
+        """🆕 汎用送信コマンド実行"""
+        if not self.send_command:
+            print("❌ 送信コマンドが設定されていません")
+            return False
+            
         try:
-            print("📤 天秤AI送信実行中...")
-            # Cmd+Enter送信
-            subprocess.run(['osascript', '-e', '''
-            tell application "System Events"
-                key code 36 using command down
-            end tell
-            '''])
-            print("✅ 天秤AI送信完了")
+            print(f"📤 送信実行中 (コマンド: {self.send_command})...")
+            
+            if self.send_command == 'Enter':
+                # Enter送信
+                subprocess.run(['osascript', '-e', '''
+                tell application "System Events"
+                    key code 36
+                end tell
+                '''])
+                print("✅ Enter送信完了")
+                
+            elif self.send_command == 'Cmd+Enter':
+                # Cmd+Enter送信
+                subprocess.run(['osascript', '-e', '''
+                tell application "System Events"
+                    key code 36 using command down
+                end tell
+                '''])
+                print("✅ Cmd+Enter送信完了")
+                
+            else:
+                print(f"❌ 未対応送信コマンド: {self.send_command}")
+                return False
+                
             return True
+            
         except Exception as e:
             print(f"❌ 送信エラー: {e}")
             return False
 
     def play_sound_async(self, sound_type):
-        """🎵 非同期音声フィードバック再生（最終版）"""
+        """🎵 非同期音声フィードバック再生"""
         def play():
             sounds = {
-                'start': 'Glass',      # 録音開始: クリスタル音
-                'complete': 'Submarine', # 録音完了: 深めの完了音
-                'error': 'Funk'        # エラー: 目立つが不快でない
+                'start': 'sounds/recording_start.mp3',      # 録音開始
+                'complete': 'sounds/recording_complete.mp3', # 録音完了
+                'error': 'Funk'        # エラー
             }
             try:
-                subprocess.run(['afplay', f'/System/Library/Sounds/{sounds[sound_type]}.aiff'], 
-                            check=False)
-            except:
-                pass
+                sound_file = sounds.get(sound_type)
+                if sound_file and os.path.exists(sound_file):
+                    subprocess.run(['afplay', sound_file], check=False)
+                else:
+                    print(f"⚠️ 音声ファイルが見つかりません: {sound_file}")
+            except Exception as e:
+                print(f"⚠️ 音声再生エラー: {e}")
         
         threading.Thread(target=play, daemon=True).start()
 
@@ -124,8 +217,8 @@ class VoiceInputTool:
             
         print("🎤 録音開始...")
         
-        # 🔍 アプリ判別を最初に実行
-        self.is_tenbin_app = self.is_tenbin_ai()
+        # 🆕 汎用アプリ判別を最初に実行
+        self.send_command = self.get_app_send_command()
         
         self.is_recording = True
         self.audio_data = []
@@ -347,13 +440,15 @@ class VoiceInputTool:
                 
                 insert_end = time.time()
                 
-                # 🚀 天秤AI判別結果に基づく送信待機モード
-                if success and self.is_tenbin_app:
-                    print("🎯 天秤AI検知 - 送信待機モード開始")
+                # 🆕 汎用送信判別結果に基づく送信待機モード
+                if success and self.send_command:
+                    print(f"🎯 送信対応サービス検知 - 送信待機モード開始 (コマンド: {self.send_command})")
                     time.sleep(0.2)  # テキスト挿入完了待ち
-                    self.enter_send_waiting_mode() 
+                    self.enter_send_waiting_mode()
+                elif success:
+                    print("ℹ️ 送信なしサービス - 即座にアイドル復帰")
                 
-                # Phase 7-C: 詳細処理時間ログ出力
+                # Phase S-8: 詳細処理時間ログ出力
                 audio_prep_time = wav_save_start - audio_prep_start
                 wav_save_time = wav_save_end - wav_save_start
                 whisper_prep_time = whisper_start - wav_save_end
@@ -363,9 +458,9 @@ class VoiceInputTool:
                 total_time = insert_end - process_start
                 
                 print("="*60)
-                print("🔬 Phase 7-C 詳細時間分析:")
+                print("🔬 Phase S-8 Step 2 詳細時間分析:")
                 print(f"📊 録音時間: {duration:.2f}秒")
-                print(f"🔧 音声データ前処理: {audio_prep_time:.2f}") 
+                print(f"🔧 音声データ前処理: {audio_prep_time:.2f}秒") 
                 print(f"💾 WAVファイル保存: {wav_save_time:.2f}秒") 
                 print(f"⚙️ Whisper前準備: {whisper_prep_time:.2f}秒")
                 print(f"🎤 Whisper処理: {whisper_time:.2f}秒")
@@ -375,8 +470,8 @@ class VoiceInputTool:
                 print(f"  └ 文字列結合: {join_end - join_start:.2f}秒")
                 print(f"📋 テキスト挿入: {insert_time:.2f}秒")
                 print(f"⏱️ 総処理時間: {total_time:.2f}秒")
-                if self.is_tenbin_app:
-                    print(f"⏳ 天秤AI送信待機: F1キーで送信")
+                if self.send_command:
+                    print(f"⏳ 送信待機中 (コマンド: {self.send_command}) - F1キーで送信")
                 print("="*60)
                 
             else:
@@ -398,11 +493,14 @@ class VoiceInputTool:
                     self.reset_waiting_state()
                 self.start_recording()
             elif str(key) == '<145>':  # F1キーのキーコード
-                # F1キーで送信実行
-                if self.waiting_for_send and self.is_tenbin_app:
-                    print("🚀 F1キー送信実行")
-                    self.send_tenbin_command()
-                    self.reset_waiting_state()
+                # 🆕 F1キーで汎用送信実行
+                if self.waiting_for_send and self.send_command:
+                    print(f"🚀 F1キー送信実行 (コマンド: {self.send_command})")
+                    success = self.execute_send_command()
+                    if success:
+                        self.reset_waiting_state()
+                    else:
+                        self.play_sound_async('error')
                 else:
                     print("⚠️ 送信待機状態ではありません")
         except AttributeError:
@@ -418,7 +516,7 @@ class VoiceInputTool:
 
     def enter_send_waiting_mode(self):
         """送信待機状態に移行"""
-        print("⏳ 送信待機状態開始 - F1キーで送信")
+        print(f"⏳ 送信待機状態開始 (コマンド: {self.send_command}) - F1キーで送信")
         self.waiting_for_send = True
         
         # 15分タイムアウト設定
@@ -438,16 +536,19 @@ class VoiceInputTool:
         if self.waiting_for_send:
             print("🔄 送信待機状態リセット")
             self.waiting_for_send = False
+            self.send_command = None  # 🆕 送信コマンドもリセット
             if self.waiting_timer:
                 self.waiting_timer.cancel()
                 self.waiting_timer = None
 
     def run(self):
         """メインループ実行"""
-        print("🚀 音声入力ツール Phase S-2 F1分離送信版 開始")
+        print("🚀 音声入力ツール Phase S-8 Step 2 汎用送信システム版 開始")
         print("💡 Escキーを押している間録音されます")
-        print("🎵 音声フィードバック: ピッ(開始) → ピピッ(完了)")
-        print("🎯 天秤AIの場合はF1キーで送信されます")
+        print("🎵 音声フィードバック: Glass(開始) → Submarine(完了)")
+        print("🌟 対応サービス: 18個の主要AI・開発・チャットサービス")
+        print("🎯 送信対応サービスの場合はF1キーで送信されます")
+        print("📤 送信コマンド: Enter系(12個) / Cmd+Enter系(6個)")
         
         # キーボードリスナー開始
         with keyboard.Listener(
