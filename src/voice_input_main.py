@@ -14,6 +14,7 @@ import os
 import time
 import threading
 import subprocess
+from dictionaries import apply_dictionary
 
 class VoiceInputTool:
     def __init__(self):
@@ -257,15 +258,7 @@ class VoiceInputTool:
         self.play_sound_async('complete')
         
         self.is_recording = False
-        
-        try:
-            if self.stream:
-                self.stream.stop()
-                self.stream.close()
-                self.stream = None
-        except Exception as e:
-            print(f"⚠️ 録音停止エラー: {e}")
-            self.play_sound_async('error')
+        self._cleanup_stream()
         
         # 音声処理を別スレッドで実行
         threading.Thread(target=self.process_audio, daemon=True).start()
@@ -419,6 +412,11 @@ class VoiceInputTool:
             # 文字列結合時間測定
             join_start = time.time()
             transcribed_text = "".join(segment_texts)
+
+            # 🆕 Phase P-1-1: 辞書機能適用
+            print("🔄 辞書処理適用中...")
+            transcribed_text = apply_dictionary(transcribed_text)
+
             join_end = time.time()
             
             # 測定ポイント5: テキスト結合完了
@@ -532,9 +530,24 @@ class VoiceInputTool:
         self.waiting_timer = threading.Timer(15 * 60, self.timeout_waiting_state)
         self.waiting_timer.start()
 
+    def _cleanup_stream(self):
+        """ストリームの安全なクリーンアップ"""
+        try:
+            if self.stream:
+                if self.stream.active:
+                    self.stream.stop()
+                self.stream.close()
+                self.stream = None
+                time.sleep(0.1)  # リソース解放待ち
+        except Exception as e:
+            print(f"⚠️ ストリームクリーンアップエラー: {e}")
+            self.stream = None
+
     def timeout_waiting_state(self):
         """送信待機状態タイムアウト"""
         print("⏰ 送信待機状態タイムアウト（15分経過）")
+        self.is_recording = False
+        self._cleanup_stream()
         self.reset_waiting_state()
 
     def reset_waiting_state(self):
