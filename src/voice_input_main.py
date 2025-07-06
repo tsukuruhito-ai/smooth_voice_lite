@@ -187,15 +187,21 @@ class VoiceInputTool:
     def play_sound_async(self, sound_type):
         """🎵 非同期音声フィードバック再生"""
         def play():
+            # スクリプトのディレクトリを基準にする
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            
             sounds = {
-                'start': 'sounds/recording_start.mp3',      # 録音開始
-                'complete': 'sounds/recording_complete.mp3', # 録音完了
+                'start': os.path.join(script_dir, 'sounds', 'recording_start.mp3'),      # 録音開始
+                'complete': os.path.join(script_dir, 'sounds', 'recording_complete.mp3'), # 録音完了
                 'error': 'Funk'        # エラー
             }
             try:
                 sound_file = sounds.get(sound_type)
-                if sound_file and os.path.exists(sound_file):
+                if sound_file and sound_file != 'Funk' and os.path.exists(sound_file):
                     subprocess.run(['afplay', sound_file], check=False)
+                elif sound_file == 'Funk':
+                    # システム音の場合はそのまま
+                    subprocess.run(['afplay', '/System/Library/Sounds/Funk.aiff'], check=False)
                 else:
                     print(f"⚠️ 音声ファイルが見つかりません: {sound_file}")
             except Exception as e:
