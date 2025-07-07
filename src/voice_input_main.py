@@ -15,10 +15,11 @@ import time
 import threading
 import subprocess
 from dictionaries import apply_dictionary
+from logger import log_always, log_debug
 
 class VoiceInputTool:
     def __init__(self):
-        print("🎤 音声入力ツール Phase S-8 Step 2 汎用送信システム版 初期化中...")
+        log_debug("🎤 音声入力ツール 汎用送信システム版 初期化中...")
         
         # 基本設定
         self.sample_rate = 16000
@@ -75,21 +76,20 @@ class VoiceInputTool:
         os.makedirs(self.sounds_dir, exist_ok=True)
         
         # Whisperモデル初期化
-        print("🧠 Whisperモデル読み込み中...")
+        log_debug("🧠 Whisperモデル読み込み中...")
         self.model = WhisperModel("small", device="cpu", compute_type="int8")
-        print("✅ 初期化完了！")
+        log_debug("✅ 初期化完了！")
         print("\n" + "="*50)
         print("🎯 使用方法:")
         print("  📌 Escキーを押している間録音")
         print("  📌 F1キーで送信実行")
         print("  📌 Ctrl+C で終了")
-        print("🌟 対応サービス: 18個の主要AI・開発・チャットサービス")
         print("="*50 + "\n")
 
         # クリップボード初期化
-        print("🔧 クリップボード初期化中...")
+        log_debug("🔧 クリップボード初期化中...")
         subprocess.run(['pbcopy'], input="", text=True)
-        print("✅ クリップボード初期化完了")
+        log_debug("✅ クリップボード初期化完了")
 
     def get_app_send_command(self):
         """🆕 Web + Desktop ハイブリッド判別システム"""
@@ -155,7 +155,7 @@ class VoiceInputTool:
             return False
             
         try:
-            print(f"📤 送信実行中 (コマンド: {self.send_command})...")
+            log_debug(f"📤 送信実行中 (コマンド: {self.send_command})...")
             
             if self.send_command == 'Enter':
                 # Enter送信
@@ -287,7 +287,7 @@ class VoiceInputTool:
             result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True)
             
             if result.returncode == 0:
-                print("✅ テキスト挿入完了")
+                log_debug("✅ テキスト挿入完了")
                 return True
             else:
                 return False
@@ -339,7 +339,7 @@ class VoiceInputTool:
             audio_array = np.array(self.audio_data, dtype=np.float32)
             duration = len(audio_array) / self.sample_rate
             
-            print(f"📊 録音データ: {len(audio_array)}サンプル, {duration:.1f}秒")
+            log_debug(f"📊 録音データ: {len(audio_array)}サンプル, {duration:.1f}秒")
             
             # 最低録音時間チェック
             if duration < 0.5:
@@ -350,7 +350,7 @@ class VoiceInputTool:
             # 音声レベル確認（デバッグ用）
             max_level = np.max(np.abs(audio_array))
             rms_level = np.sqrt(np.mean(audio_array**2))
-            print(f"🔊 音声レベル - Max: {max_level:.4f}, RMS: {rms_level:.4f}")
+            log_debug(f"🔊 音声レベル - Max: {max_level:.4f}, RMS: {rms_level:.4f}")
             
             if max_level < 0.01:
                 print("⚠️ 音声レベルが低すぎます")
@@ -363,7 +363,7 @@ class VoiceInputTool:
             # WAVファイルに保存
             wav_data = (audio_array * 32767).astype(np.int16)
             wav.write(self.temp_file, self.sample_rate, wav_data)
-            print(f"💾 音声ファイル保存: {self.temp_file}")
+            log_debug(f"💾 音声ファイル保存: {self.temp_file}")
             
             # 測定ポイント3: WAVファイル保存完了
             wav_save_end = time.time()
@@ -372,7 +372,7 @@ class VoiceInputTool:
             whisper_start = time.time()
             
             # Whisperで音声認識
-            print("🧠 音声認識処理中...")
+            log_debug("🧠 音声認識処理中...")
             segments, info = self.model.transcribe(
                 self.temp_file,
                 language="ja",
@@ -386,13 +386,13 @@ class VoiceInputTool:
             
             whisper_end = time.time()
             
-            print(f"📋 認識言語: {info.language} (確率: {info.language_probability:.2f})")
+            log_debug(f"📋 認識言語: {info.language} (確率: {info.language_probability:.2f})")
             
             # 測定ポイント4: テキスト結合開始
             text_combine_start = time.time()
             
             # セグメント処理
-            print("🧠 セグメント処理中...")
+            log_debug("🧠 セグメント処理中...")
             
             # セグメント取得時間測定
             segments_fetch_start = time.time()
@@ -404,7 +404,7 @@ class VoiceInputTool:
             segment_texts = []
             
             for segment in segments_list:
-                print(f"📝 セグメント: '{segment.text}' (信頼度: {segment.avg_logprob:.2f})")
+                log_debug(f"📝 セグメント: '{segment.text}' (信頼度: {segment.avg_logprob:.2f})")
                 segment_texts.append(segment.text)
             
             segments_process_end = time.time()
@@ -446,7 +446,7 @@ class VoiceInputTool:
                 
                 # 🆕 汎用送信判別結果に基づく送信待機モード
                 if success and self.send_command:
-                    print(f"🎯 送信対応サービス検知 - 送信待機モード開始 (コマンド: {self.send_command})")
+                    log_debug(f"🎯 送信対応サービス検知 - 送信待機モード開始 (コマンド: {self.send_command})")
                     time.sleep(0.2)  # テキスト挿入完了待ち
                     self.enter_send_waiting_mode()
                 elif success:
@@ -461,22 +461,21 @@ class VoiceInputTool:
                 insert_time = insert_end - insert_start
                 total_time = insert_end - process_start
                 
-                print("="*60)
-                print("🔬 Phase S-8 Step 2 詳細時間分析:")
-                print(f"📊 録音時間: {duration:.2f}秒")
-                print(f"🔧 音声データ前処理: {audio_prep_time:.2f}秒") 
-                print(f"💾 WAVファイル保存: {wav_save_time:.2f}秒") 
-                print(f"⚙️ Whisper前準備: {whisper_prep_time:.2f}秒")
-                print(f"🎤 Whisper処理: {whisper_time:.2f}秒")
-                print(f"📝 テキスト結合: {text_combine_time:.2f}秒")
-                print(f"  └ セグメント取得: {segments_fetch_end - segments_fetch_start:.2f}秒")
-                print(f"  └ セグメント処理: {segments_process_end - segments_process_start:.2f}秒")
-                print(f"  └ 文字列結合: {join_end - join_start:.2f}秒")
-                print(f"📋 テキスト挿入: {insert_time:.2f}秒")
-                print(f"⏱️ 総処理時間: {total_time:.2f}秒")
+                log_debug("="*60)
+                log_debug(f"📊 録音時間: {duration:.2f}秒")
+                log_debug(f"🔧 音声データ前処理: {audio_prep_time:.2f}秒") 
+                log_debug(f"💾 WAVファイル保存: {wav_save_time:.2f}秒") 
+                log_debug(f"⚙️ Whisper前準備: {whisper_prep_time:.2f}秒")
+                log_debug(f"🎤 Whisper処理: {whisper_time:.2f}秒")
+                log_debug(f"📝 テキスト結合: {text_combine_time:.2f}秒")
+                log_debug(f"  └ セグメント取得: {segments_fetch_end - segments_fetch_start:.2f}秒")
+                log_debug(f"  └ セグメント処理: {segments_process_end - segments_process_start:.2f}秒")
+                log_debug(f"  └ 文字列結合: {join_end - join_start:.2f}秒")
+                log_debug(f"📋 テキスト挿入: {insert_time:.2f}秒")
+                log_debug(f"⏱️ 総処理時間: {total_time:.2f}秒")
                 if self.send_command:
-                    print(f"⏳ 送信待機中 (コマンド: {self.send_command}) - F1キーで送信")
-                print("="*60)
+                    log_debug(f"⏳ 送信待機中 (コマンド: {self.send_command}) - F1キーで送信")
+                log_debug("="*60)
                 
             else:
                 print("❌ 音声を認識できませんでした")
@@ -499,7 +498,7 @@ class VoiceInputTool:
             elif str(key) == '<145>':  # F1キーのキーコード
                 # 🆕 F1キーで汎用送信実行
                 if self.waiting_for_send and self.send_command:
-                    print(f"🚀 F1キー送信実行 (コマンド: {self.send_command})")
+                    log_debug(f"🚀 F1キー送信実行 (コマンド: {self.send_command})")
                     success = self.execute_send_command()
                     if success:
                         self.reset_waiting_state()
@@ -562,12 +561,9 @@ class VoiceInputTool:
 
     def run(self):
         """メインループ実行"""
-        print("🚀 音声入力ツール Phase S-8 Step 2 汎用送信システム版 開始")
+        print("🚀 音声入力ツール 利用開始しました")
         print("💡 Escキーを押している間録音されます")
-        print("🎵 音声フィードバック: Glass(開始) → Submarine(完了)")
-        print("🌟 対応サービス: 18個の主要AI・開発・チャットサービス")
-        print("🎯 送信対応サービスの場合はF1キーで送信されます")
-        print("📤 送信コマンド: Enter系(12個) / Cmd+Enter系(6個)")
+        log_debug("🎯 送信対応サービスの場合はF1キーで送信可能です")
         
         # キーボードリスナー開始
         with keyboard.Listener(
