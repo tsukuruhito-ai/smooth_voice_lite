@@ -68,9 +68,6 @@ BASIC_DICTIONARY = {
     "ランウェイ": "Runway",
     "らんうぇい": "Runway",
     
-    "ピカ": "Pika",
-    "ぴか": "Pika",
-    
     "ギットハブコパイロット": "GitHub Copilot",
     "ぎっとはぶこぱいろっと": "GitHub Copilot",
     "コパイロット": "Copilot",
@@ -166,10 +163,6 @@ BASIC_DICTIONARY = {
     "りあくと": "React",
     "リアクトジェイエス": "React.js",
 
-    "ビュー": "Vue",
-    "びゅー": "Vue",
-    "ビュージェイエス": "Vue.js",
-
     "アンギュラー": "Angular",
     "あんぎゅらー": "Angular",
 
@@ -228,9 +221,6 @@ BASIC_DICTIONARY = {
     "スイフト": "Swift",
     "すいふと": "Swift",
 
-    "ダート": "Dart",
-    "だーと": "Dart",
-
     "フラッター": "Flutter",
     "ふらったー": "Flutter",
 
@@ -260,12 +250,6 @@ BASIC_DICTIONARY = {
     "ているうぃんど": "Tailwind CSS",
     "テイルウィンドシーエスエス": "Tailwind CSS",
 
-    "サス": "Sass",
-    "さす": "Sass",
-
-    "レス": "Less",
-    "れす": "Less",
-
     "ウェブパック": "Webpack",
     "うぇぶぱっく": "Webpack",
 
@@ -292,9 +276,6 @@ BASIC_DICTIONARY = {
 
     "ジェスト": "Jest",
     "じぇすと": "Jest",
-
-    "モカ": "Mocha",
-    "もか": "Mocha",
 
     "サイプレス": "Cypress",
     "さいぷれす": "Cypress",
@@ -340,12 +321,6 @@ BASIC_DICTIONARY = {
     "コンティニュー": "continue",
     "こんてぃにゅー": "continue",
 
-    "トライ": "try",
-    "とらい": "try",
-
-    "キャッチ": "catch",
-    "きゃっち": "catch",
-
     "エクセプト": "except",
     "えくせぷと": "except",
 
@@ -367,9 +342,6 @@ BASIC_DICTIONARY = {
     "スーパー": "super",
     "すーぱー": "super",
 
-    "ヌル": "null",
-    "ぬる": "null",
-
     "アンディファインド": "undefined",
     "あんでぃふぁいんど": "undefined",
 
@@ -379,14 +351,8 @@ BASIC_DICTIONARY = {
     "フォルス": "false",
     "ふぉるす": "false",
 
-    "レット": "let",
-    "れっと": "let",
-
     "コンスト": "const",
     "こんすと": "const",
-
-    "アロー": "=>",
-    "あろー": "=>",
 
     "アロー関数": "Arrow Function",
     "あろーかんすう": "Arrow Function",
@@ -503,9 +469,6 @@ BASIC_DICTIONARY = {
     "ビジュアルスタジオコード": "Visual Studio Code",
     "びじゅあるすたじおこーど": "Visual Studio Code",
 
-    "アトム": "Atom",
-    "あとむ": "Atom",
-
     "サブライムテキスト": "Sublime Text",
     "さぶらいむてきすと": "Sublime Text",
 
@@ -556,9 +519,6 @@ BASIC_DICTIONARY = {
 
     "トラビスシーアイ": "Travis CI",
     "とらびすしーあい": "Travis CI",
-
-    "ジラ": "Jira",
-    "じら": "Jira",
 
     "コンフルエンス": "Confluence",
     "こんふるえんす": "Confluence",
@@ -683,9 +643,6 @@ BASIC_DICTIONARY = {
     "ターボパック": "Turbopack",
     "たーぼぱっく": "Turbopack",
 
-    "ビート": "Vite",
-    "びーと": "Vite",
-
     "フィグマ": "Figma",
     "ふぃぐま": "Figma",
 
@@ -766,117 +723,6 @@ BASIC_DICTIONARY = {
     # 他のクリエイティブツール
     "ブレンダー": "Blender",
     "ぶれんだー": "Blender",
-
-    "マヤ": "Maya",
-    "まや": "Maya",
-
-    "スリーディーエスマックス": "3ds Max",
-    "すりーでぃーえすまっくす": "3ds Max",
-
-    "シネマフォーディー": "Cinema 4D",
-    "しねまふぉーでぃー": "Cinema 4D",
-
-    "ゼットブラシ": "ZBrush",
-    "ぜっとぶらし": "ZBrush",
-
-    "サブスタンスペインター": "Substance Painter",
-    "さぶすたんすぺいんたー": "Substance Painter",
-
-    "サブスタンスデザイナー": "Substance Designer",
-    "さぶすたんすでざいなー": "Substance Designer",
-
-    "ハウディーニ": "Houdini",
-    "はうでぃーに": "Houdini",
-
-    "ヌーク": "Nuke",
-    "ぬーく": "Nuke",
-
-    "ダビンチリゾルブ": "DaVinci Resolve",
-    "だびんちりぞるぶ": "DaVinci Resolve",
-
-    "アビッドメディアコンポーザー": "Avid Media Composer",
-    "あびっどめでぃあこんぽーざー": "Avid Media Composer",
-
-    "ファイナルカットプロ": "Final Cut Pro",
-    "ふぁいなるかっとぷろ": "Final Cut Pro",
-
-    "プロツールズ": "Pro Tools",
-    "ぷろつーるず": "Pro Tools",
-
-    "ロジックプロ": "Logic Pro",
-    "ろじっくぷろ": "Logic Pro",
-
-    "アベルトンライブ": "Ableton Live",
-    "あべるとんらいぶ": "Ableton Live",
-
-    "フルーツループス": "FL Studio",
-    "ふるーつるーぷす": "FL Studio",
-
-    "キューベース": "Cubase",
-    "きゅーべーす": "Cubase",
-
-    "リーズン": "Reason",
-    "りーずん": "Reason",
-
-    "オーダシティ": "Audacity",
-    "おーだしてぃ": "Audacity",
-
-    "ガレージバンド": "GarageBand",
-    "がれーじばんど": "GarageBand",
-
-    "リアパー": "Reaper",
-    "りあぱー": "Reaper",
-
-    "クリップスタジオ": "Clip Studio Paint",
-    "くりっぷすたじお": "Clip Studio Paint",
-
-    "ペイントツールサイ": "Paint Tool SAI",
-    "ぺいんとつーるさい": "Paint Tool SAI",
-
-    "アスプライト": "Aseprite",
-    "あすぷらいと": "Aseprite",
-
-    "ピクセルメーター": "Pixelmator",
-    "ぴくせるめーたー": "Pixelmator",
-
-    "アフィニティフォト": "Affinity Photo",
-    "あふぃにてぃふぉと": "Affinity Photo",
-
-    "アフィニティデザイナー": "Affinity Designer",
-    "あふぃにてぃでざいなー": "Affinity Designer",
-
-    "ジンプ": "GIMP",
-    "じんぷ": "GIMP",
-
-    "インクスケープ": "Inkscape",
-    "いんくすけーぷ": "Inkscape",
-
-    "キャンバ": "Canva",
-    "かんば": "Canva",
-
-    "オープンショット": "OpenShot",
-    "おーぷんしょっと": "OpenShot",
-
-    "ショットカット": "Shotcut",
-    "しょっとかっと": "Shotcut",
-
-    "キーショット": "KeyShot",
-    "きーしょっと": "KeyShot",
-
-    "ソリッドワークス": "SolidWorks",
-    "そりっどわーくす": "SolidWorks",
-
-    "オートキャド": "AutoCAD",
-    "おーときゃど": "AutoCAD",
-
-    "ライノセラス": "Rhinoceros",
-    "らいのせらす": "Rhinoceros",
-
-    "スケッチアップ": "SketchUp",
-    "すけっちあっぷ": "SketchUp",
-
-    "フュージョン": "Fusion 360",
-    "ふゅーじょん": "Fusion 360",
 
      # 技術系 / クラウドサービス
     "エーダブリューエス": "AWS",
@@ -965,14 +811,6 @@ BASIC_DICTIONARY = {
     "ワンドライブ": "OneDrive",
     "わんどらいぶ": "OneDrive",
 
-    "トレロ": "Trello",
-    "とれろ": "Trello",
-
-    "アサナ": "Asana",
-    "あさな": "Asana",
-
-    "ジラ": "Jira",
-    "じら": "Jira",
 
     "セールスフォース": "Salesforce",
     "せーるすふぉーす": "Salesforce",
@@ -1089,9 +927,6 @@ BASIC_DICTIONARY = {
     "ザピア": "Zapier",
     "ざぴあ": "Zapier",
 
-    "フリー": "freee",
-    "ふりー": "freee",
-
     "マネーフォワード": "MoneyForward",
     "まねーふぉわーど": "MoneyForward",
 
@@ -1103,18 +938,6 @@ BASIC_DICTIONARY = {
 
     "キントーン": "kintone",
     "きんとーん": "kintone",
-
-    "マンデードットコム": "Monday.com",
-    "まんでーどっとこむ": "Monday.com",
-
-    "ミロ": "Miro",
-    "みろ": "Miro",
-
-    "コンフルエンス": "Confluence",
-    "こんふるえんす": "Confluence",
-
-    "パイプドライブ": "Pipedrive",
-    "ぱいぷどらいぶ": "Pipedrive",
 
     "ゾーホー": "Zoho",
     "ぞーほー": "Zoho",
@@ -1280,10 +1103,6 @@ BASIC_DICTIONARY = {
     "ケーディーディーアイ": "KDDI",
     "けーでぃーでぃーあい": "KDDI",
 
-    "au": "au",
-    "エーユー": "au",
-    "えーゆー": "au",
-
     "オープンエーアイ": "OpenAI",
     "おーぷんえーあい": "OpenAI",
 
@@ -1345,24 +1164,6 @@ BASIC_DICTIONARY = {
     "ブッキングドットコム": "Booking.com",
     "ぶっきんぐどっとこむ": "Booking.com",
 
-    "じゃらん": "じゃらん",
-    "ジャラン": "じゃらん",
-
-    "楽天トラベル": "楽天トラベル",
-    "らくてんとらべる": "楽天トラベル",
-
-    "メルカリ": "メルカリ",
-    "めるかり": "メルカリ",
-
-    "ヤフオク": "ヤフオク",
-    "やふおく": "ヤフオク",
-
-    "アマゾン": "Amazon",
-    "あまぞん": "Amazon",
-
-    "楽天": "楽天",
-    "らくてん": "楽天",
-
     "ゾゾタウン": "ZOZOTOWN",
     "ぞぞたうん": "ZOZOTOWN",
 
@@ -1375,30 +1176,6 @@ BASIC_DICTIONARY = {
     "ウーバーイーツ": "Uber Eats",
     "うーばーいーつ": "Uber Eats",
 
-    "出前館": "出前館",
-    "でまえかん": "出前館",
-
-    "フードパンダ": "foodpanda",
-    "ふーどぱんだ": "foodpanda",
-
-    "ドアダッシュ": "DoorDash",
-    "どあだっしゅ": "DoorDash",
-
-    "ぐるなび": "ぐるなび",
-    "グルナビ": "ぐるなび",
-
-    "食べログ": "食べログ",
-    "たべろぐ": "食べログ",
-
-    "クックパッド": "クックパッド",
-    "くっくぱっど": "クックパッド",
-
-    "リクルート": "リクルート",
-    "りくるーと": "リクルート",
-
-    "マイナビ": "マイナビ",
-    "まいなび": "マイナビ",
-
     "ビズリーチ": "ビズリーチ",
     "びずりーち": "ビズリーチ",
 
@@ -1410,9 +1187,6 @@ BASIC_DICTIONARY = {
 
     "クラウドワークス": "CrowdWorks",
     "くらうどわーくす": "CrowdWorks",
-
-    "ココナラ": "ココナラ",
-    "ここなら": "ココナラ",
 
     "ユーチューブ": "YouTube",
     "ゆーちゅーぶ": "YouTube",
@@ -1431,9 +1205,6 @@ BASIC_DICTIONARY = {
 
     "ツイッチ": "Twitch",
     "ついっち": "Twitch",
-
-    "ニコニコ": "ニコニコ",
-    "にこにこ": "ニコニコ",
 
     "TVer": "TVer",
     "ティーバー": "TVer",
@@ -1477,10 +1248,6 @@ BASIC_DICTIONARY = {
     "リフト": "Lyft",
     "りふと": "Lyft",
 
-    "GO": "GO",
-    "ゴー": "GO",
-    "ごー": "GO",
-
     "ジャパンタクシー": "JapanTaxi",
     "じゃぱんたくしー": "JapanTaxi",
 
@@ -1502,51 +1269,11 @@ BASIC_DICTIONARY = {
     "デュオリンゴ": "Duolingo",
     "でゅおりんご": "Duolingo",
 
-    "スタディサプリ": "スタディサプリ",
-    "すたでぃさぷり": "スタディサプリ",
-
-    "プロゲート": "Progate",
-    "ぷろげーと": "Progate",
-
-    "ドットインストール": "ドットインストール",
-    "どっといんすとーる": "ドットインストール",
-
     "イーベイ": "eBay",
     "いーべい": "eBay",
 
-    "アリエクスプレス": "AliExpress",
-    "ありえくすぷれす": "AliExpress",
-
-    "ウィッシュ": "Wish",
-    "うぃっしゅ": "Wish",
-
-    "Qoo10": "Qoo10",
-    "キューテン": "Qoo10",
-    "きゅーてん": "Qoo10",
-
-    "ヨドバシ": "ヨドバシ",
-    "よどばし": "ヨドバシ",
-
-    "ビックカメラ": "ビックカメラ",
-    "びっくかめら": "ビックカメラ",
-
-    "ユニクロ": "ユニクロ",
-    "ゆにくろ": "ユニクロ",
-
-    "無印良品": "無印良品",
-    "むじるしりょうひん": "無印良品",
-
     "リンクトイン": "LinkedIn",
     "りんくといん": "LinkedIn",
-
-    "アップワーク": "Upwork",
-    "あっぷわーく": "Upwork",
-
-    "ファイバー": "Fiverr",
-    "ふぁいばー": "Fiverr",
-
-    "フリーランサー": "Freelancer",
-    "ふりーらんさー": "Freelancer",
 
     "フィットビット": "Fitbit",
     "ふぃっとびっと": "Fitbit",
@@ -1557,14 +1284,9 @@ BASIC_DICTIONARY = {
     "マイフィットネスパル": "MyFitnessPal",
     "まいふぃっとねすぱる": "MyFitnessPal",
 
-    "ヘルスケア": "ヘルスケア",
-    "へるすけあ": "ヘルスケア",
 
     "スマートニュース": "SmartNews",
     "すまーとにゅーす": "SmartNews",
-
-    "グノシー": "グノシー",
-    "ぐのしー": "グノシー",
 
     "ライン": "LINE",
     "らいん": "LINE",
@@ -1837,9 +1559,6 @@ BASIC_DICTIONARY = {
     "アレクサ": "Alexa",
     "あれくさ": "Alexa",
 
-    "エコー": "Echo",
-    "えこー": "Echo",
-
     "グーグルホーム": "Google Home",
     "ぐーぐるほーむ": "Google Home",
 
@@ -1848,12 +1567,6 @@ BASIC_DICTIONARY = {
 
     "ウェアラブル": "ウェアラブル",
     "うぇあらぶる": "ウェアラブル",
-
-    "ピーシー": "PC",
-    "ぴーしー": "PC",
-
-    "マック": "Mac",
-    "まっく": "Mac",
 
     "アンドロイド": "Android",
     "あんどろいど": "Android",
@@ -1890,9 +1603,6 @@ BASIC_DICTIONARY = {
 
     "キンドル": "Kindle",
     "きんどる": "Kindle",
-
-    "エコー": "Echo",
-    "えこー": "Echo",
 
     "アレクサ": "Alexa",
     "あれくさ": "Alexa",
@@ -1937,14 +1647,6 @@ BASIC_DICTIONARY = {
     "GPU": "GPU",
     "ジーピーユー": "GPU",
     "じーぴーゆー": "GPU",
-
-    "RAM": "RAM",
-    "ラム": "RAM",
-    "らむ": "RAM",
-
-    "ROM": "ROM",
-    "ロム": "ROM",
-    "ろむ": "ROM",
 
     # 用語系 / マーケティング用語
     "エスイーオー": "SEO",
@@ -1994,9 +1696,6 @@ BASIC_DICTIONARY = {
 
     "エルピー": "LP",
     "えるぴー": "LP",
-
-    "ランディングページ": "LP",
-    "らんでぃんぐぺーじ": "LP",
 
     "ユーエックス": "UX",
     "ゆーえっくす": "UX",
@@ -2071,14 +1770,8 @@ BASIC_DICTIONARY = {
     "イーアールピー": "ERP",
     "いーあーるぴー": "ERP",
 
-    "ビーアイ": "BI",
-    "びーあい": "BI",
-
     "エーアイ": "AI",
     "えーあい": "AI",
-
-    "エムエル": "ML",
-    "えむえる": "ML",
 
     "ディーエックス": "DX",
     "でぃーえっくす": "DX",
@@ -2130,9 +1823,6 @@ BASIC_DICTIONARY = {
 
     "バイスプレジデント": "VP",
     "ばいすぷれじでんと": "VP",
-
-    "ブイピー": "VP",
-    "ぶいぴー": "VP",
 
     "エヌディーエー": "NDA",
     "えぬでぃーえー": "NDA",
@@ -2244,12 +1934,6 @@ BASIC_DICTIONARY = {
     "エムアールアール": "MRR",
     "えむあーるあーる": "MRR",
 
-    "エーシーブイ": "ACV",
-    "えーしーぶい": "ACV",
-
-    "シーエーシー": "CAC",
-    "しーえーしー": "CAC",
-
     "エルティーブイ": "LTV",
     "えるてぃーぶい": "LTV",
 
@@ -2264,18 +1948,6 @@ BASIC_DICTIONARY = {
 
     "ピーアンドエル": "P&L",
     "ぴーあんどえる": "P&L",
-
-    "ビーエス": "BS",
-    "びーえす": "BS",
-
-    "バランスシート": "BS",
-    "ばらんすしーと": "BS",
-
-    "シーエフ": "CF",
-    "しーえふ": "CF",
-
-    "キャッシュフロー": "CF",
-    "きゃっしゅふろー": "CF",
 
     "オーシーエフ": "OCF",
     "おーしーえふ": "OCF",
@@ -2313,26 +1985,8 @@ BASIC_DICTIONARY = {
     "ビーピーエス": "BPS",
     "びーぴーえす": "BPS",
 
-    "ディーピーエス": "DPS",
-    "でぃーぴーえす": "DPS",
-
-    "デューデリジェンス": "DD",
-    "でゅーでりじぇんす": "DD",
-
-    "ディーディー": "DD",
-    "でぃーでぃー": "DD",
-
-    "ベンチャーキャピタル": "VC",
-    "べんちゃーきゃぴたる": "VC",
-
-    "ブイシー": "VC",
-    "ぶいしー": "VC",
-
     "プライベートエクイティ": "PE",
     "ぷらいべーとえくいてぃ": "PE",
-
-    "ピーイー": "PE",
-    "ぴーいー": "PE",
 
     "アイピーオー": "IPO",
     "あいぴーおー": "IPO",
@@ -2403,30 +2057,6 @@ BASIC_DICTIONARY = {
 
     "ティーバー": "TVer",
     "てぃーばー": "TVer",
-
-    "ニコニコ": "ニコニコ動画",
-    "にこにこ": "ニコニコ動画",
-
-    "ニコ動": "ニコニコ動画",
-    "にこどう": "ニコニコ動画",
-
-    "ビリビリ": "bilibili",
-    "びりびり": "bilibili",
-
-    "クランチロール": "Crunchyroll",
-    "くらんちろーる": "Crunchyroll",
-
-    "アニメイト": "アニメイト",
-    "あにめいと": "アニメイト",
-
-    "バンダイ": "BANDAI",
-    "ばんだい": "BANDAI",
-
-    "タカラトミー": "タカラトミー",
-    "たからとみー": "タカラトミー",
-
-    "任天堂": "Nintendo",
-    "にんてんどう": "Nintendo",
 
     "ソニー": "Sony",
     "そにー": "Sony",
@@ -2536,36 +2166,6 @@ BASIC_DICTIONARY = {
     "マーベル": "Marvel",
     "まーべる": "Marvel",
 
-    "DCコミックス": "DC Comics",
-    "でぃーしーこみっくす": "DC Comics",
-
-    "ジブリ": "スタジオジブリ",
-    "じぶり": "スタジオジブリ",
-
-    "スタジオジブリ": "スタジオジブリ",
-    "すたじおじぶり": "スタジオジブリ",
-
-    "東映": "東映",
-    "とうえい": "東映",
-
-    "東宝": "東宝",
-    "とうほう": "東宝",
-
-    "ワーナー": "Warner Bros",
-    "わーなー": "Warner Bros",
-
-    "ユニバーサル": "Universal",
-    "ゆにばーさる": "Universal",
-
-    "パラマウント": "Paramount",
-    "ぱらまうんと": "Paramount",
-
-    "20世紀フォックス": "20th Century Fox",
-    "にじっせいきふぉっくす": "20th Century Fox",
-
-    "コロンビア": "Columbia Pictures",
-    "ころんびあ": "Columbia Pictures",
-
     "アップルミュージック": "Apple Music",
     "あっぷるみゅーじっく": "Apple Music",
 
@@ -2589,12 +2189,6 @@ BASIC_DICTIONARY = {
 
     "Kindle Unlimited": "Kindle Unlimited",
     "きんどるあんりみてっど": "Kindle Unlimited",
-
-    "コミックシーモア": "コミックシーモア",
-    "こみっくしーもあ": "コミックシーモア",
-
-    "ピッコマ": "ピッコマ",
-    "ぴっこま": "ピッコマ",
 
     "LINEマンガ": "LINEマンガ",
     "らいんまんが": "LINEマンガ",
@@ -2775,9 +2369,6 @@ BASIC_DICTIONARY = {
 
     "陰キャ": "陰キャ",
     "いんきゃ": "陰キャ",
-
-    "ギガ": "ギガ",
-    "ぎが": "ギガ",
 
     "ググる": "ググる",
     "ぐぐる": "ググる",

@@ -79,6 +79,7 @@ class VoiceInputTool:
         log_debug("🧠 Whisperモデル読み込み中...")
         self.model = WhisperModel("small", device="cpu", compute_type="int8")
         log_debug("✅ 初期化完了！")
+        self.play_sound_async('ready')
         print("\n" + "="*50)
         print("🎯 使用方法:")
         print("  📌 Escキーを押している間録音")
@@ -194,6 +195,8 @@ class VoiceInputTool:
             sounds = {
                 'start': os.path.join(script_dir, 'sounds', 'recording_start.mp3'),      # 録音開始
                 'complete': os.path.join(script_dir, 'sounds', 'recording_complete.mp3'), # 録音完了
+                'ready': os.path.join(script_dir, 'sounds', 'recording_ready.mp3'),# 起動音
+                'timeout': os.path.join(script_dir, 'sounds', 'recording_timeout.mp3'),  # タイムアウト音
                 'error': 'Funk'        # エラー
             }
             try:
@@ -545,6 +548,7 @@ class VoiceInputTool:
     def timeout_waiting_state(self):
         """送信待機状態タイムアウト"""
         print("⏰ 送信待機状態タイムアウト（15分経過）")
+        self.play_sound_async('timeout') 
         self.is_recording = False
         self._cleanup_stream()
         self.reset_waiting_state()
