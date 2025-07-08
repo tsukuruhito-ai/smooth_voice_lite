@@ -93,11 +93,11 @@ VOICE_INPUT_TOOL/
 
 ## 🔧 技術スタック
 
-- **faster-whisper**: 高速音声認識
-- **sounddevice**: 音声録音
-- **pynput**: キーボード制御
-- **pyautogui**: 自動操作
-- **pyobjc**: macOSアプリ判別
+- **faster-whisper**: 高速音声認識（OpenAI Whisper最適化版）
+- **sounddevice**: 音声録音・再生
+- **pynput**: キーボード・マウス制御
+- **pyautogui**: 自動操作・画面制御
+- **pyobjc**: macOSアプリ判別・システム連携
 
 ## 📝 開発者
 
