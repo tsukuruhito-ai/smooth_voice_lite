@@ -3,7 +3,7 @@ voice_env/
 
 # 一時ファイル・テスト
 temp/
-tests/
+src/temp/           
 
 # macOS自動生成
 .DS_Store
