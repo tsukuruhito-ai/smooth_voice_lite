@@ -21,12 +21,17 @@ class VoiceInputTool:
     def __init__(self):
         log_debug("🎤 音声入力ツール 汎用送信システム版 初期化中...")
         
+        # 🔧 パス設定（実行場所に依存しない絶対パス）
+        # スクリプトファイルの場所を基準とする
+        self.script_dir = os.path.dirname(os.path.abspath(__file__))
+        self.temp_dir = os.path.join(self.script_dir, "temp")
+        self.sounds_dir = os.path.join(self.script_dir, "sounds")
+        
         # 基本設定
         self.sample_rate = 16000
         self.is_recording = False
         self.audio_data = []
         self.stream = None
-        self.temp_dir = "temp"
         self.temp_file = os.path.join(self.temp_dir, "current_recording.wav")
         
         # 🆕 汎用送信システム
@@ -68,11 +73,8 @@ class VoiceInputTool:
         self.waiting_for_send = False
         self.waiting_timer = None
             
-        # tempディレクトリ作成
+        # 必要なディレクトリを作成
         os.makedirs(self.temp_dir, exist_ok=True)
-
-            # soundsディレクトリ作成
-        self.sounds_dir = "sounds"
         os.makedirs(self.sounds_dir, exist_ok=True)
         
         # Whisperモデル初期化
@@ -189,14 +191,11 @@ class VoiceInputTool:
     def play_sound_async(self, sound_type):
         """🎵 非同期音声フィードバック再生"""
         def play():
-            # スクリプトのディレクトリを基準にする
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            
             sounds = {
-                'start': os.path.join(script_dir, 'sounds', 'recording_start.mp3'),      # 録音開始
-                'complete': os.path.join(script_dir, 'sounds', 'recording_complete.mp3'), # 録音完了
-                'ready': os.path.join(script_dir, 'sounds', 'recording_ready.mp3'),# 起動音
-                'timeout': os.path.join(script_dir, 'sounds', 'recording_timeout.mp3'),  # タイムアウト音
+                'start': os.path.join(self.sounds_dir, 'recording_start.mp3'),      # 録音開始
+                'complete': os.path.join(self.sounds_dir, 'recording_complete.mp3'), # 録音完了
+                'ready': os.path.join(self.sounds_dir, 'recording_ready.mp3'),       # 起動音
+                'timeout': os.path.join(self.sounds_dir, 'recording_timeout.mp3'),   # タイムアウト音
                 'error': 'Funk'        # エラー
             }
             try:
