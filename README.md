@@ -59,7 +59,7 @@ macOS向け音声入力ツール。ESCキー長押しで録音、アプリ自動
 ## 🛠️ セットアップ
 
 ### 1. リポジトリクローン
-git clone https://github.com/[username]/VOICE_INPUT_TOOL.git
+git clone https://github.com/tsukuruhito-ai/VOICE_INPUT_TOOL.git
 cd VOICE_INPUT_TOOL
 
 ### 2. 仮想環境作成・パッケージインストール
@@ -98,6 +98,11 @@ VOICE_INPUT_TOOL/
 - **pynput**: キーボード・マウス制御
 - **pyautogui**: 自動操作・画面制御
 - **pyobjc**: macOSアプリ判別・システム連携
+
+## 🔧 動作環境
+
+- **Python**: 3.8以上（開発環境: 3.13.5）
+- **macOS**: 10.14以上（開発環境: Ventura 13.5）
 
 ## 📝 開発者
 
