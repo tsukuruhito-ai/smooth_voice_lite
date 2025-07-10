@@ -47,10 +47,6 @@ BASIC_DICTIONARY = {
     "ボルト": "Bolt",
     "ぼると": "Bolt",
     
-    "ヴィゼロ": "V0",
-    "ぶいぜろ": "V0",
-    "ブイゼロ": "V0",
-    
     "レプリット": "Replit",
     "れぷりっと": "Replit",
     
@@ -82,9 +78,6 @@ BASIC_DICTIONARY = {
     "ジャスパー": "Jasper",
     "じゃすぱー": "Jasper",
     
-    "コピー": "Copy.ai",
-    "こぴー": "Copy.ai",
-    
     "ハギングフェイス": "Hugging Face",
     "はぎんぐふぇいす": "Hugging Face",
     
@@ -103,20 +96,12 @@ BASIC_DICTIONARY = {
     "ウィスパー": "Whisper",
     "うぃすぱー": "Whisper",
     
-    "ラマ": "Llama",
-    "らま": "Llama",
-    "ラマツー": "Llama 2",
-    
     "エムシーピー": "MCP",
     "えむしーぴー": "MCP",
     "えむしぃぴー": "MCP",
     
     "えるえるえむ": "LLM",
     "エルエルエム": "LLM",
-    
-    "ラグ": "RAG",
-    "らぐ": "RAG",
-    "アールエージー": "RAG",
     
     "エージーアイ": "AGI",
     "えーじーあい": "AGI",
@@ -208,13 +193,6 @@ BASIC_DICTIONARY = {
     "しーしゃーぷ": "C#",
     "シープラスプラス": "C++",
 
-    "ゴー": "Go",
-    "ごー": "Go",
-    "ゴーラング": "Golang",
-
-    "ラスト": "Rust",
-    "らすと": "Rust",
-
     "コトリン": "Kotlin",
     "ことりん": "Kotlin",
 
@@ -252,9 +230,6 @@ BASIC_DICTIONARY = {
 
     "ウェブパック": "Webpack",
     "うぇぶぱっく": "Webpack",
-
-    "ビート": "Vite",
-    "びーと": "Vite",
 
     "パーセル": "Parcel",
     "ぱーせる": "Parcel",
@@ -333,9 +308,6 @@ BASIC_DICTIONARY = {
     "でぷろい": "デプロイ",
     "ディプロい": "デプロイ",
 
-    "ディス": "this",
-    "でぃす": "this",
-
     "セルフ": "self",
     "せるふ": "self",
 
@@ -354,14 +326,8 @@ BASIC_DICTIONARY = {
     "コンスト": "const",
     "こんすと": "const",
 
-    "アロー関数": "Arrow Function",
-    "あろーかんすう": "Arrow Function",
-
     "ラムダ": "lambda",
     "らむだ": "lambda",
-
-    "マップ": "map",
-    "まっぷ": "map",
 
     "フィルター": "filter",
     "ふぃるたー": "filter",
@@ -425,9 +391,6 @@ BASIC_DICTIONARY = {
 
     "クロージャー": "closure",
     "くろーじゃー": "closure",
-
-    "スコープ": "scope",
-    "すこーぷ": "scope",
 
     "ホイスティング": "hoisting",
     "ほいすてぃんぐ": "hoisting",
@@ -589,12 +552,6 @@ BASIC_DICTIONARY = {
     "エヌピーエム": "npm",
     "えぬぴーえむ": "npm",
 
-    "ヤーン": "Yarn",
-    "やーん": "Yarn",
-
-    "ピップ": "pip",
-    "ぴっぷ": "pip",
-
     "コンダ": "conda",
     "こんだ": "conda",
 
@@ -624,9 +581,6 @@ BASIC_DICTIONARY = {
 
     "プリティア": "Prettier",
     "ぷりてぃあ": "Prettier",
-
-    "ハスキー": "Husky",
-    "はすきー": "Husky",
 
     "リントステージド": "lint-staged",
     "りんとすてーじど": "lint-staged",
@@ -683,15 +637,6 @@ BASIC_DICTIONARY = {
 
     "ドリームウィーバー": "Dreamweaver",
     "どりーむうぃーばー": "Dreamweaver",
-
-    "フラッシュ": "Flash",
-    "ふらっしゅ": "Flash",
-
-    "アニメイト": "Animate",
-    "あにめいと": "Animate",
-
-    "オーディション": "Audition",
-    "おーでぃしょん": "Audition",
 
     "プレリュード": "Prelude",
     "ぷれりゅーど": "Prelude",
@@ -1242,20 +1187,11 @@ BASIC_DICTIONARY = {
     "ストライプ": "Stripe",
     "すとらいぷ": "Stripe",
 
-    "グラブ": "Grab",
-    "ぐらぶ": "Grab",
-
-    "リフト": "Lyft",
-    "りふと": "Lyft",
-
     "ジャパンタクシー": "JapanTaxi",
     "じゃぱんたくしー": "JapanTaxi",
 
     "スカイスキャナー": "Skyscanner",
     "すかいすきゃなー": "Skyscanner",
-
-    "カヤック": "Kayak",
-    "かやっく": "Kayak",
 
     "トリップアドバイザー": "TripAdvisor",
     "とりっぷあどばいざー": "TripAdvisor",
@@ -1284,7 +1220,6 @@ BASIC_DICTIONARY = {
     "マイフィットネスパル": "MyFitnessPal",
     "まいふぃっとねすぱる": "MyFitnessPal",
 
-
     "スマートニュース": "SmartNews",
     "すまーとにゅーす": "SmartNews",
 
@@ -1296,10 +1231,6 @@ BASIC_DICTIONARY = {
 
     "マネーフォワード": "MoneyForward",
     "まねーふぉわーど": "MoneyForward",
-
-    "Zaim": "Zaim",
-    "ザイム": "Zaim",
-    "ざいむ": "Zaim",
 
     "グーグルドライブ": "Google Drive",
     "ぐーぐるどらいぶ": "Google Drive",
@@ -1417,9 +1348,6 @@ BASIC_DICTIONARY = {
     "ジップ": "ZIP",
     "じっぷ": "ZIP",
 
-    "ラー": "RAR",
-    "らー": "RAR",
-
     "シーエスブイ": "CSV",
     "しーえすぶい": "CSV",
 
@@ -1519,9 +1447,6 @@ BASIC_DICTIONARY = {
 
     "アクオス": "AQUOS",
     "あくおす": "AQUOS",
-
-    "アロー": "ARROWS",
-    "あろー": "ARROWS",
 
     "キンドル": "Kindle",
     "きんどる": "Kindle",
@@ -1937,9 +1862,6 @@ BASIC_DICTIONARY = {
     "エルティーブイ": "LTV",
     "えるてぃーぶい": "LTV",
 
-    "ガープ": "GAAP",
-    "がーぷ": "GAAP",
-
     "アイエフアールエス": "IFRS",
     "あいえふあーるえす": "IFRS",
 
@@ -2111,13 +2033,8 @@ BASIC_DICTIONARY = {
     "りーぐおぶれじぇんど": "League of Legends",
 
     "LoL": "League of Legends",
-    "ロル": "League of Legends",
-    "ろる": "League of Legends",
     "エルオーエル": "League of Legends",
     "えるおーえる": "League of Legends",
-
-    "ドータ": "Dota 2",
-    "どーた": "Dota 2",
 
     "オーバーウォッチ": "Overwatch",
     "おーばーうぉっち": "Overwatch",
@@ -2393,10 +2310,6 @@ BASIC_DICTIONARY = {
     "DeFi": "DeFi",
     "ディーファイ": "DeFi",
     "でぃーふぁい": "DeFi",
-
-    "DAO": "DAO",
-    "ダオ": "DAO",
-    "だお": "DAO",
 
     "VTuber": "VTuber",
     "ブイチューバー": "VTuber",
