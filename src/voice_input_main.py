@@ -1,5 +1,5 @@
 """
-音声入力ツール Phase S-8 Step 2 - 汎用送信システム実装
+音声入力ツール  汎用送信システム実装
 Escキーを押している間録音し、離すと音声をテキストに変換してアクティブなフィールドに挿入
 18サービス対応の汎用送信機能 - 送信システム完成版
 """
@@ -34,10 +34,10 @@ class VoiceInputTool:
         self.stream = None
         self.temp_file = os.path.join(self.temp_dir, "current_recording.wav")
         
-        # 🆕 汎用送信システム
+        # 汎用送信システム
         self.send_command = None  # 'Enter' / 'Cmd+Enter' / None
         
-        # 🆕 送信コマンド辞書
+        # 送信コマンド辞書
         self.SEND_COMMANDS = {
             # AIチャット (Enter系)
             'chatgpt.com': 'Enter',
@@ -62,7 +62,7 @@ class VoiceInputTool:
             'line.me': 'Enter',
         }
         
-        # 🆕 デスクトップアプリ辞書
+        # デスクトップアプリ辞書
         self.DESKTOP_COMMANDS = {
             'Claude': 'Cmd+Enter',
             'Visual Studio Code': 'Cmd+Enter',
@@ -84,8 +84,8 @@ class VoiceInputTool:
         self.play_sound_async('ready')
         print("\n" + "="*50)
         print("🎯 使用方法:")
-        print("  📌 右Commandキーを押している間録音")
-        print("  📌 右Shiftキーで送信実行")
+        print("  📌 Macbookモード 　　: 右Command：録音 + 右Shift：送信")
+        print("  📌 クラムシェルモード: 右Command：録音 + 右Shift：送信 or F1：録音 + F2：送信")
         print("  📌 Ctrl+C で終了")
         print("="*50 + "\n")
 
@@ -95,7 +95,7 @@ class VoiceInputTool:
         log_debug("✅ クリップボード初期化完了")
 
     def get_app_send_command(self):
-        """🆕 Web + Desktop ハイブリッド判別システム"""
+        """Web + Desktop ハイブリッド判別システム"""
         try:
             script = '''
             tell application "System Events"
@@ -133,7 +133,7 @@ class VoiceInputTool:
             return None
 
     def _get_web_send_command(self, url):
-        """🆕 Web版URL判別"""
+        """Web版URL判別"""
         for domain, command in self.SEND_COMMANDS.items():
             if domain in url:
                 print(f"✅ Web版判別成功: {domain} → {command}")
@@ -142,7 +142,7 @@ class VoiceInputTool:
         return None
 
     def _get_desktop_send_command(self, app_name):
-        """🆕 Desktop版アプリ名判別"""
+        """Desktop版アプリ名判別"""
         for app, command in self.DESKTOP_COMMANDS.items():
             if app in app_name:
                 print(f"✅ Desktop版判別成功: {app} → {command}")
@@ -152,7 +152,7 @@ class VoiceInputTool:
 
     # 🆕 汎用送信システム実装
     def execute_send_command(self):
-        """🆕 汎用送信コマンド実行"""
+        """汎用送信コマンド実行"""
         if not self.send_command:
             print("❌ 送信コマンドが設定されていません")
             return False
@@ -189,7 +189,7 @@ class VoiceInputTool:
             return False
 
     def play_sound_async(self, sound_type):
-        """🎵 非同期音声フィードバック再生"""
+        """非同期音声フィードバック再生"""
         def play():
             sounds = {
                 'start': os.path.join(self.sounds_dir, 'recording_start.mp3'),      # 録音開始
@@ -226,14 +226,14 @@ class VoiceInputTool:
             
         print("🎤 録音開始...")
         
-        # 🆕 汎用アプリ判別を最初に実行
+        # 汎用アプリ判別を最初に実行
         self.send_command = self.get_app_send_command()
         
         self.is_recording = True
         self.audio_data = []
         self.recording_start_time = time.time()
         
-        # 🎵 音声フィードバック: 録音開始（非同期）
+        # 音声フィードバック: 録音開始（非同期）
         self.play_sound_async('start')
         
         # 録音開始処理（最優先）
@@ -415,13 +415,13 @@ class VoiceInputTool:
             join_start = time.time()
             transcribed_text = "".join(segment_texts)
 
-            # 🆕 Phase P-1-1: 辞書機能適用
+            # 辞書機能適用
             print("🔄 辞書処理適用中...")
             transcribed_text = apply_dictionary(transcribed_text)
 
             join_end = time.time()
             
-            # 測定ポイント5: テキスト結合完了
+            # テキスト結合完了
             text_combine_end = time.time()
             
             if transcribed_text.strip():
@@ -446,15 +446,15 @@ class VoiceInputTool:
                 
                 insert_end = time.time()
                 
-                # 🆕 汎用送信判別結果に基づく送信待機モード
+                # 汎用送信判別結果に基づく送信待機モード
                 if success and self.send_command:
-                    log_debug(f"🎯 送信対応サービス検知 - 送信待機モード開始 (コマンド: {self.send_command})")
+                    log_debug(f"🎯 送信対応サービス検知 - 送信待機モード開始")
                     time.sleep(0.2)  # テキスト挿入完了待ち
                     self.enter_send_waiting_mode()
                 elif success:
                     print("ℹ️ 送信なしサービス - 即座にアイドル復帰")
                 
-                # Phase S-8: 詳細処理時間ログ出力
+                # 詳細処理時間ログ出力
                 audio_prep_time = wav_save_start - audio_prep_start
                 wav_save_time = wav_save_end - wav_save_start
                 whisper_prep_time = whisper_start - wav_save_end
@@ -476,7 +476,7 @@ class VoiceInputTool:
                 log_debug(f"📋 テキスト挿入: {insert_time:.2f}秒")
                 log_debug(f"⏱️ 総処理時間: {total_time:.2f}秒")
                 if self.send_command:
-                    log_debug(f"⏳ 送信待機中 (コマンド: {self.send_command}) - F1キーで送信")
+                    log_debug(f"⏳ 送信待機中")
                 log_debug("="*60)
                 
             else:
@@ -492,14 +492,32 @@ class VoiceInputTool:
     def on_press(self, key):
         """キー押下時の処理"""
         try:
-            if key == keyboard.Key.cmd_r:  # 右Command録音
-                # 送信待機中なら前の状態リセット
+            # F1キー録音（クラムシェル時）- キーコード145
+            if hasattr(key, 'vk') and key.vk == 145:  # F1キー
                 if self.waiting_for_send:
                     self.reset_waiting_state()
                 self.start_recording()
                 
-            elif key == keyboard.Key.shift_r:  # 右Shift送信
-                # 🆕 右Shiftキーで汎用送信実行
+            # F2キー送信（クラムシェル時）- キーコード144
+            elif hasattr(key, 'vk') and key.vk == 144:  # F2キー
+                if self.waiting_for_send and self.send_command:
+                    log_debug(f"🚀 F2キー送信実行 (コマンド: {self.send_command})")
+                    success = self.execute_send_command()
+                    if success:
+                        self.reset_waiting_state()
+                    else:
+                        self.play_sound_async('error')
+                else:
+                    print("⚠️ 送信待機状態ではありません")
+                    
+            # 右Command録音（ノート時）
+            elif key == keyboard.Key.cmd_r:
+                if self.waiting_for_send:
+                    self.reset_waiting_state()
+                self.start_recording()
+                
+            # 右Shift送信（ノート時）
+            elif key == keyboard.Key.shift_r:
                 if self.waiting_for_send and self.send_command:
                     log_debug(f"🚀 右Shiftキー送信実行 (コマンド: {self.send_command})")
                     success = self.execute_send_command()
@@ -516,7 +534,12 @@ class VoiceInputTool:
     def on_release(self, key):
         """キー離し時の処理"""
         try:
-            if key == keyboard.Key.cmd_r:  # 右Command録音停止
+            # F1キー録音停止（クラムシェル時）
+            if hasattr(key, 'vk') and key.vk == 145:  # F1キー
+                self.stop_recording()
+                
+            # 右Command録音停止（ノート時）
+            elif key == keyboard.Key.cmd_r:
                 self.stop_recording()
         except AttributeError:
             pass
@@ -566,9 +589,9 @@ class VoiceInputTool:
 
     def run(self):
         """メインループ実行"""
-        print("🚀 音声入力ツール 利用開始しました")
-        print("💡 右Commandキーを押している間録音されます")
-        log_debug("🎯 送信対応サービスの場合は右Shiftキーで送信可能です")
+        print("🚀 音声入力ツール 利用開始できます")
+        print("💡 お使いの環境に応じた録音キーを押している間録音されます")
+        log_debug("🎯 お使いの環境に応じた送信キーで送信可能です")
         
         # キーボードリスナー開始
         with keyboard.Listener(
