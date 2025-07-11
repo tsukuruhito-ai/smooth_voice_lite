@@ -84,8 +84,8 @@ class VoiceInputTool:
         self.play_sound_async('ready')
         print("\n" + "="*50)
         print("🎯 使用方法:")
-        print("  📌 Escキーを押している間録音")
-        print("  📌 F1キーで送信実行")
+        print("  📌 右Commandキーを押している間録音")
+        print("  📌 右Shiftキーで送信実行")
         print("  📌 Ctrl+C で終了")
         print("="*50 + "\n")
 
@@ -492,15 +492,16 @@ class VoiceInputTool:
     def on_press(self, key):
         """キー押下時の処理"""
         try:
-            if key == keyboard.Key.esc:
+            if key == keyboard.Key.cmd_r:  # 右Command録音
                 # 送信待機中なら前の状態リセット
                 if self.waiting_for_send:
                     self.reset_waiting_state()
                 self.start_recording()
-            elif str(key) == '<145>':  # F1キーのキーコード
-                # 🆕 F1キーで汎用送信実行
+                
+            elif key == keyboard.Key.shift_r:  # 右Shift送信
+                # 🆕 右Shiftキーで汎用送信実行
                 if self.waiting_for_send and self.send_command:
-                    log_debug(f"🚀 F1キー送信実行 (コマンド: {self.send_command})")
+                    log_debug(f"🚀 右Shiftキー送信実行 (コマンド: {self.send_command})")
                     success = self.execute_send_command()
                     if success:
                         self.reset_waiting_state()
@@ -508,20 +509,21 @@ class VoiceInputTool:
                         self.play_sound_async('error')
                 else:
                     print("⚠️ 送信待機状態ではありません")
+                    
         except AttributeError:
             pass
 
     def on_release(self, key):
         """キー離し時の処理"""
         try:
-            if key == keyboard.Key.esc:
+            if key == keyboard.Key.cmd_r:  # 右Command録音停止
                 self.stop_recording()
         except AttributeError:
             pass
 
     def enter_send_waiting_mode(self):
         """送信待機状態に移行"""
-        print(f"⏳ 送信待機状態開始 (コマンド: {self.send_command}) - F1キーで送信")
+        print(f"⏳ 送信待機状態開始")
         self.waiting_for_send = True
         
         # 15分タイムアウト設定
@@ -565,8 +567,8 @@ class VoiceInputTool:
     def run(self):
         """メインループ実行"""
         print("🚀 音声入力ツール 利用開始しました")
-        print("💡 Escキーを押している間録音されます")
-        log_debug("🎯 送信対応サービスの場合はF1キーで送信可能です")
+        print("💡 右Commandキーを押している間録音されます")
+        log_debug("🎯 送信対応サービスの場合は右Shiftキーで送信可能です")
         
         # キーボードリスナー開始
         with keyboard.Listener(
