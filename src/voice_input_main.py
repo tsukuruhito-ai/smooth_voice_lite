@@ -379,12 +379,15 @@ class VoiceInputTool:
             segments, info = self.model.transcribe(
                 self.temp_file,
                 language="ja",
-                beam_size=1,
-                best_of=1,
+                beam_size=5,
+                best_of=5,
                 temperature=0.0,
                 no_speech_threshold=0.6,
                 log_prob_threshold=-1.0,
-                compression_ratio_threshold=2.4
+                compression_ratio_threshold=2.4,
+                word_timestamps=True,  
+                vad_filter=True,      
+                vad_parameters=dict(min_silence_duration_ms=500)  
             )
             
             whisper_end = time.time()
