@@ -69,8 +69,8 @@ macOS Voice Input Tool - One-Key Recording & One-Key Sending for Seamless Voice 
 ## 🛠️ Setup
 
 ### 1. Clone Repository
-git clone https://github.com/tsukuruhito-ai/VOICE_INPUT_TOOL.git
-cd VOICE_INPUT_TOOL
+git clone https://github.com/tsukuruhito-ai/smooth_voice_lite.git
+cd smooth_voice_lite
 
 ### 2. Create Virtual Environment & Install Packages
 python3 -m venv voice_env

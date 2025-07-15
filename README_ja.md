@@ -1,26 +1,36 @@
 
 =================================================================
-# 🎤 Voice Input Tool
-macOS向け音声入力ツール。ESCキー長押しで録音、アプリ自動判別、送信まで自動化。
+# 🎤 Smooth Voice Lite
+macOS向け音声入力ツール。ワンキー録音・ワンキー送信のなめらかな音声入力体験。
 =================================================================
+
+[英語版 / English Version](README_en.md)
 
 ## ✨ 特徴
 
-- **ESCキー長押し操作**: 押している間だけ録音、離すと停止
-- **アプリ自動判別**: Webアプリ16種 + デスクトップアプリ3種に対応
-- **自動送信**: 録音→変換→送信まで完全自動
+- **ハイブリッド操作対応**: 
+  - 外部キーボード: 右Command録音 + 右Shift送信 or F1録音 + F2送信　※apple純正キーボードのみ
+  - ノート時: 右Command録音 + 右Shift送信
+- **18サービス対応**: Web版16種 + Desktop版3種のアプリ自動判別
+- **汎用送信システム**: Enter/Cmd+Enter自動判別・送信
 - **高精度音声認識**: OpenAI Whisper (faster-whisper)
 - **辞書機能**: 変換精度向上（例：クロード→Claude）
-- **音感フィードバック**: 起動/録音開始/完了/エラー/タイムアウトをSE音で通知
+- **音声フィードバック**: 起動/録音開始/完了/エラー/タイムアウトをSE音で通知
 - **シームレス操作**: 録音から送信まで一連の流れで完結
 
 ## 🎯 使用方法
 
 ### 基本操作
 1. ツールを起動
-2. **ESCキー長押し**で録音開始
-3. **ESCキー離す**で録音停止・自動処理開始
-4. アプリ判別→テキスト変換→自動送信
+2. **録音キー長押し**で録音開始
+3. **録音キー離す**で録音停止・自動処理開始
+4. アプリ判別→テキスト変換→送信待機
+5. **送信キー**で送信実行
+
+### 操作キー
+- **💻 ノート時**: 右Command録音 + 右Shift送信
+- **🖥️ 外部キーボード**: 右Command録音 + 右Shift送信 or F1録音 + F2送信
+- **📌 お好みでどちらでも使えます！**
 
 ### 対応アプリ・送信コマンド
 
@@ -59,8 +69,8 @@ macOS向け音声入力ツール。ESCキー長押しで録音、アプリ自動
 ## 🛠️ セットアップ
 
 ### 1. リポジトリクローン
-git clone https://github.com/tsukuruhito-ai/VOICE_INPUT_TOOL.git
-cd VOICE_INPUT_TOOL
+git clone https://github.com/tsukuruhito-ai/smooth_voice_lite.git
+cd smooth_voice_lite
 
 ### 2. 仮想環境作成・パッケージインストール
 python3 -m venv voice_env
@@ -84,7 +94,7 @@ VOICE_INPUT_TOOL/
 │   │   ├── basic_dictionary.py
 │   │   └── dictionary_processor.py
 │   ├── sounds/               # 効果音
-│   ├── temps/               # 一時ファイル
+│   ├── temp/                # 一時ファイル
 │   ├── logger.py            # ログ機能
 │   └── voice_input_main.py  # メインプログラム
 ├── .gitignore
@@ -111,3 +121,7 @@ VOICE_INPUT_TOOL/
 ## 📄 ライセンス
 
 MIT License
+
+---
+
+**🎤 Smooth Voice Lite - なめらかな音声入力体験を、あなたの手に。**
