@@ -97,6 +97,11 @@ VOICE_INPUT_TOOL/
 │   ├── temp/                # Temporary files
 │   ├── logger.py            # Logging function
 │   └── voice_input_main.py  # Main program
+├── docs/                    # Documentation
+│   └── security/           # Security-related
+│       ├── self_audit_report.md
+│       ├── bandit_result.txt
+│       └── safety_result.txt
 ├── .gitignore
 ├── README.md
 └── requirements.txt
@@ -117,6 +122,47 @@ VOICE_INPUT_TOOL/
 ## 📝 Developer
 
 This is my first project and I'm still learning. Feedback, Issues, and PRs are welcome!
+
+## 🔒 Security Verification
+
+### ⚠️ About This Tool
+This tool uses the following macOS permissions:
+- **Microphone Access** (Speech recognition)
+- **Input Monitoring** (Keyboard operation detection)
+- **Accessibility** (Automation & app detection)
+
+To ensure transparency, all code is open-source and we conduct continuous security verification.
+
+### 📊 Verified Items (Updated: 2025-07-16)
+
+#### ✅ Static Analysis Results
+- **bandit**: 21 Low severity warnings → All normal functional implementations
+- **safety**: 0 vulnerabilities in 95 packages → Completely safe
+
+#### ✅ Safety Confirmed
+- 🌐 **External Communication**: None (Complete local processing)
+- 🔑 **Authentication Info**: No hardcoded credentials
+- 📁 **File Operations**: Only appropriate temporary file management
+- ⚡ **Permission Usage**: Only minimum necessary for functionality
+
+### 🙏 To Technical Community
+**We are seeking third-party verification!**
+
+Since this tool requires OS-level permissions, we welcome review from more technical experts.
+
+**Points We'd Like Verified**
+- Absence of malicious network communications
+- Potential misuse of keylogger functionality
+- Runtime behavior monitoring
+- Security improvement suggestions
+
+**Feedback Method**
+- GitHub Issues for reports and suggestions
+
+### 📋 Detailed Verification Reports
+- [Self-Audit Completion Report](docs/security/self_audit_report.md)
+- [bandit Static Analysis Results](docs/security/bandit_result.txt)
+- [safety Vulnerability Check Results](docs/security/safety_result.txt)
 
 ## 📄 License
 
