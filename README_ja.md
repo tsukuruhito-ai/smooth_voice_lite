@@ -1,5 +1,3 @@
-
-=================================================================
 # 🎤 Smooth Voice Lite
 macOS向け音声入力ツール。ワンキー録音・ワンキー送信のなめらかな音声入力体験。
 =================================================================
@@ -101,9 +99,14 @@ VOICE_INPUT_TOOL/
 │   └── security/           # セキュリティ関連
 │       ├── self_audit_report.md
 │       ├── bandit_result.txt
-│       └── safety_result.txt
+│       ├── safety_result.txt
+│       ├── network_after.txt
+│       ├── network_before.txt
+│       ├── network_during.txt
+│       └── network_monitoring_report.md
 ├── .gitignore
-├── README.md
+├── README_ja.md
+├── README_en.md
 └── requirements.txt
 
 ## 🔧 技術スタック
@@ -133,11 +136,17 @@ VOICE_INPUT_TOOL/
 
 透明性を保つため、全コードを公開し、継続的なセキュリティ検証を実施しています。
 
-### 📊 検証済み項目 (2025-07-16更新)
+### 📊 検証済み項目 (2025-01-18更新)
 
 #### ✅ 静的解析結果
 - **bandit**: 21件Low severity警告 → 全て正常な機能実装
 - **safety**: 95パッケージ中脆弱性0件 → 完全に安全
+
+#### ✅ ネットワーク監視結果
+- **監視方法**: lsof コマンドによるリアルタイム監視
+- **監視期間**: 起動前・実行中・停止後
+- **結果**: 外部通信 0件（完全ローカル処理確認）
+- **証拠ファイル**: docs/security/network_*.txt (0バイト = 安全の証拠)
 
 #### ✅ 安全性確認済み
 - 🌐 **外部通信**: 一切なし（完全ローカル処理）
@@ -163,6 +172,7 @@ OSレベルの権限を使用するツールのため、より多くの目での
 - [自己監査完了レポート](docs/security/self_audit_report.md)
 - [bandit静的解析結果](docs/security/bandit_result.txt)
 - [safety脆弱性チェック結果](docs/security/safety_result.txt)
+- [ネットワーク監視レポート](docs/security/network_monitoring_report.md)
 
 ## 📄 ライセンス
 

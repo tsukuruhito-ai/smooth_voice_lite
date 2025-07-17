@@ -1,5 +1,3 @@
-
-=================================================================
 # 🎤 Smooth Voice Lite
 macOS Voice Input Tool - One-Key Recording & One-Key Sending for Seamless Voice Input Experience
 =================================================================
@@ -86,7 +84,7 @@ Allow the following in macOS System Settings:
 ### 4. Run
 python src/voice_input_main.py
 
-## 📁 Project Structure
+## �� Project Structure
 
 VOICE_INPUT_TOOL/
 ├── src/
@@ -101,15 +99,20 @@ VOICE_INPUT_TOOL/
 │   └── security/           # Security-related
 │       ├── self_audit_report.md
 │       ├── bandit_result.txt
-│       └── safety_result.txt
+│       ├── safety_result.txt
+│       ├── network_after.txt
+│       ├── network_before.txt
+│       ├── network_during.txt
+│       └── network_monitoring_report.md
 ├── .gitignore
-├── README.md
+├── README_ja.md
+├── README_en.md
 └── requirements.txt
 
 ## 🔧 Tech Stack
 
 - **faster-whisper**: High-speed speech recognition (OpenAI Whisper optimized)
-- **sounddevice**: Audio recording & playback
+- **sounddevice**: Audio recording & playbook
 - **pynput**: Keyboard & mouse control
 - **pyautogui**: Automation & screen control
 - **pyobjc**: macOS app detection & system integration
@@ -133,11 +136,17 @@ This tool uses the following macOS permissions:
 
 To ensure transparency, all code is open-source and we conduct continuous security verification.
 
-### 📊 Verified Items (Updated: 2025-07-16)
+### 📊 Verified Items (Updated: 2025-01-18)
 
 #### ✅ Static Analysis Results
 - **bandit**: 21 Low severity warnings → All normal functional implementations
 - **safety**: 0 vulnerabilities in 95 packages → Completely safe
+
+#### ✅ Network Monitoring Results
+- **Monitoring Method**: Real-time monitoring with lsof command
+- **Monitoring Period**: Before startup, during execution, after shutdown
+- **Result**: 0 external communications (complete local processing confirmed)
+- **Evidence Files**: docs/security/network_*.txt (0 bytes = proof of safety)
 
 #### ✅ Safety Confirmed
 - 🌐 **External Communication**: None (Complete local processing)
@@ -159,10 +168,11 @@ Since this tool requires OS-level permissions, we welcome review from more techn
 **Feedback Method**
 - GitHub Issues for reports and suggestions
 
-### 📋 Detailed Verification Reports
+### �� Detailed Verification Reports
 - [Self-Audit Completion Report](docs/security/self_audit_report.md)
 - [bandit Static Analysis Results](docs/security/bandit_result.txt)
 - [safety Vulnerability Check Results](docs/security/safety_result.txt)
+- [Network Monitoring Report](docs/security/network_monitoring_report.md)
 
 ## 📄 License
 
